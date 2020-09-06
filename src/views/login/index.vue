@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <div id="particles-js">
+    <!-- <div id="particles-js">
       <vue-particles
         color="#dedede"
         :particle-opacity="0.7"
@@ -18,7 +18,7 @@
         :click-effect="true"
         click-mode="push"
       />
-    </div>
+    </div> -->
 
     <div class="login-weaper animated bounceInDown">
       <div class="login-left">
