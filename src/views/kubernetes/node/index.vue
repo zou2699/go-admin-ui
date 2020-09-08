@@ -62,7 +62,7 @@
         <el-tag class="pagination-small-left" type="info" effect="plain"> 共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :fullscreen="true" :center="true">
+        <el-dialog :title="title" :visible.sync="open" fullscreen="true" center="true">
           <el-row :gutter="12" class="el-row">
             <el-col :span="8">
               <el-card class="nodeInfo-box-card">
@@ -128,28 +128,21 @@
 </template>
 
 <script>
-import { getNode, listNode } from '@/api/node'
+import { getNode, listNode } from '@/api/kubernetes/node'
 
 export default {
-  name: 'Config',
+  name: 'Node',
   data() {
     return {
       // 遮罩层
       loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
       // 总条数
       total: 0,
       // 弹出层标题
       title: '',
       // 是否显示弹出层
       open: false,
-      // 类型数据字典
-      typeOptions: [],
+      // node列表
       nodeList: [],
 
       // 查询参数
