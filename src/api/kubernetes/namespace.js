@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 查询k8s namespace列表
-export function listNamespace(query) {
+export function listNamespace() {
   return request({
     url: '/k8s-api/api/v1/namespaces',
     method: 'get'

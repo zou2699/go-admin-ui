@@ -3,7 +3,7 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-          <el-form-item label="节点名称" prop="title">
+          <el-form-item label="节点名称" prop="name">
             <el-input
               v-model="queryParams.name"
               placeholder="请输入节点名称"
@@ -13,7 +13,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button type="primary" icon="el-icon-search" size="medium" @click="handleQuery">搜索</el-button>
           </el-form-item>
         </el-form>
 
@@ -62,7 +62,7 @@
         <el-tag class="pagination-small-left" type="info" effect="plain"> 共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" fullscreen="true" center="true">
+        <el-dialog :title="title" :visible.sync="open" :fullscreen="true" :center="true">
           <el-row :gutter="12" class="el-row">
             <el-col :span="8">
               <el-card class="nodeInfo-box-card">
@@ -235,7 +235,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
 }
-.pagination-small-left {
+/* .pagination-small-left {
     float: right;
-}
+} */
 </style>

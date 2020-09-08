@@ -1,0 +1,173 @@
+<template>
+  <BasicLayout>
+    <template #wrapper>
+      <el-card class="box-card">
+        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+          <el-form-item label="命名空间" prop="namespace">
+            <el-select v-model="queryParams.namespace" placeholder="请选择命名空间">
+              <el-option
+                v-for="item in namespaceList"
+                :key="item.metadata.name"
+                :label="item.metadata.name"
+                :value="item.metadata.name"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="medium"
+              @click="getDeploymentList"
+            >搜索</el-button>
+          </el-form-item>
+        </el-form>
+
+        <el-table v-loading="loading" stripe style="width: 100%" :data="deploymentList">
+          <el-table-column width="5" align="center" />
+          <el-table-column
+            label="Name"
+            align="center"
+            prop="metadata.name"
+            :show-overflow-tooltip="true"
+          />
+
+          <el-table-column label="Ready" align="center" :show-overflow-tooltip="true">
+            <template
+              slot-scope="scope"
+            >{{ scope.row.status.readyReplicas }} / {{ scope.row.status.replicas }}</template>
+          </el-table-column>
+
+          <el-table-column
+            label="Up to Date"
+            align="center"
+            prop="status.updatedReplicas"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="Available"
+            align="center"
+            prop="status.availableReplicas"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="CreateTime"
+            align="center"
+            prop="metadata.creationTimestamp"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button
+                v-permisaction="['deployment:deployment:query']"
+                type="text"
+                icon="el-icon-view"
+                @click="handleDetail(scope.row)"
+              >Yaml</el-button>
+              <el-button
+                v-permisaction="['deployment:deployment:patch']"
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleRestart(scope.row)"
+              >重启
+              </el-button>
+            </template>
+
+          </el-table-column>
+        </el-table>
+
+        <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
+
+        <!-- 添加或修改对话框 -->
+        <el-dialog :title="title" :visible.sync="open" :center="true">
+          <el-card>
+            <pre> {{ deploymentInfo }}</pre>
+          </el-card>
+        </el-dialog>
+      </el-card>
+    </template>
+  </BasicLayout>
+</template>
+
+<script>
+import { listNamespace } from '@/api/kubernetes/namespace'
+import { listDeployment, getDeployment, restartDeployment } from '@/api/kubernetes/deployment'
+
+export default {
+  name: 'Deployment',
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 弹出层标题
+      title: '',
+      // 是否显示弹出层
+      open: false,
+      // 总条数
+      total: 0,
+      // 查询参数
+      queryParams: {
+        namespace: 'default'
+      },
+      // namespace列表
+      namespaceList: [],
+      // deployment列表
+      deploymentList: [],
+      // deployment信息
+      deploymentInfo: {}
+    }
+  },
+  created() {
+    this.getList()
+    this.getDeploymentList()
+  },
+  methods: {
+    /** 查询参数列表 */
+    getList() {
+      this.loading = true
+      listNamespace().then((response) => {
+        this.namespaceList = response.data.items
+        this.loading = false
+      })
+    },
+    getDeploymentList() {
+      this.loading = true
+      const namespaceName = this.queryParams.namespace
+      listDeployment(namespaceName).then((response) => {
+        this.deploymentList = response.data.items
+        this.total = this.deploymentList.length
+        this.loading = false
+      })
+    },
+    /** 查询详细信息按钮操作 */
+    handleDetail(row) {
+      const deploymentName = row.metadata.name
+      const namespaceName = row.metadata.namespace
+      getDeployment(namespaceName, deploymentName).then((response) => {
+        this.deploymentInfo = response.data
+        this.open = true
+        this.title = 'deployment信息'
+      })
+    },
+    /** 重启deployment按钮操作 */
+    handleRestart(row) {
+      const deploymentName = row.metadata.name
+      const namespaceName = row.metadata.namespace
+      restartDeployment(namespaceName, deploymentName).then((response) => {
+        this.deploymentInfo = response.data
+        this.open = true
+        this.title = 'deployment信息'
+      })
+    }
+  }
+}
+</script>
+
+<style>
+.el-dialog__body {
+  height: 80vh;
+  overflow: auto;
+}
+</style>

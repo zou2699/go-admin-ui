@@ -3,7 +3,7 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-          <el-form-item label="命名空间名称" prop="title">
+          <el-form-item label="命名空间名称" prop="name">
             <el-input
               v-model="queryParams.name"
               placeholder="请输入命名空间名称"
@@ -13,7 +13,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button type="primary" icon="el-icon-search" size="medium" @click="handleQuery">搜索</el-button>
           </el-form-item>
         </el-form>
 
@@ -40,7 +40,7 @@
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
-                v-permisaction="['node:node:query']"
+                v-permisaction="['namespace:namespace:query']"
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
@@ -52,7 +52,7 @@
         <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" center="true">
+        <el-dialog :title="title" :visible.sync="open" :center="true">
           <pre> {{ namespaceInfo }}</pre>
         </el-dialog>
       </el-card>
@@ -64,6 +64,7 @@
 import { listNamespace, getNamespace } from '@/api/kubernetes/namespace'
 
 export default {
+  name: 'Namespace',
   data() {
     return {
       // 遮罩层
@@ -124,3 +125,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.el-dialog__body {
+  height: auto;
+  overflow: auto;
+}
+</style>

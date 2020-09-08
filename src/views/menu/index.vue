@@ -136,6 +136,7 @@
                     <el-radio label="GET">GET</el-radio>
                     <el-radio label="POST">POST</el-radio>
                     <el-radio label="PUT">PUT</el-radio>
+                    <el-radio label="PATCH">PATCH</el-radio>
                     <el-radio label="DELETE">DELETE</el-radio>
                   </el-radio-group>
                 </el-form-item>

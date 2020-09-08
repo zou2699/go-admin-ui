@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 查询k8s-node列表
-export function listNode(query) {
+export function listNode() {
   return request({
     url: '/k8s-api/api/v1/nodes',
     method: 'get'
