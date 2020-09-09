@@ -68,6 +68,14 @@
                 @click="handleDetail(scope.row)"
               >Yaml
               </el-button>
+              <router-link :to="'/kubernetes/deployment/'+scope.row.metadata.namespace+'/'+scope.row.metadata.name">
+                <el-button
+                  v-permisaction="['deployment:deployment:info']"
+                  type="text"
+                  icon="el-icon-info"
+                >view
+                </el-button>
+              </router-link>
               <el-button
                 v-permisaction="['deployment:deployment:patch']"
                 size="mini"

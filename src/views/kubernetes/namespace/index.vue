@@ -18,7 +18,6 @@
         </el-form>
 
         <el-table v-loading="loading" stripe style="width: 100%" :data="namespaceList">
-          <el-table-column width="5" align="center" />
           <el-table-column
             label="命名空间"
             align="center"

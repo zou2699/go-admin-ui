@@ -18,7 +18,6 @@
         </el-form>
 
         <el-table v-loading="loading" stripe style="width: 100%" :data="nodeList">
-          <el-table-column width="5" align="center" />
           <el-table-column
             label="节点名"
             align="center"
@@ -212,7 +211,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .clearfix:before,
 .clearfix:after {
   display: table;
