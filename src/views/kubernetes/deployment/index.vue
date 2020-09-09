@@ -120,12 +120,12 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getNamespaceList()
     this.getDeploymentList()
   },
   methods: {
     /** 查询参数列表 */
-    getList() {
+    getNamespaceList() {
       this.loading = true
       listNamespace().then((response) => {
         this.namespaceList = response.data.items
@@ -155,11 +155,16 @@ export default {
     handleRestart(row) {
       const deploymentName = row.metadata.name
       const namespaceName = row.metadata.namespace
-      restartDeployment(namespaceName, deploymentName).then((response) => {
-        this.deploymentInfo = response.data
-        this.open = true
-        this.title = 'deployment信息'
-      })
+      this.$confirm('是否重启 ' + namespaceName + '/' + deploymentName + ' ?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return restartDeployment(namespaceName, deploymentName)
+      }).then(() => {
+        this.getDeploymentList()
+        this.msgSuccess('重启成功')
+      }).catch(function() {})
     }
   }
 }
