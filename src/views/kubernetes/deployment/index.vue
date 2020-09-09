@@ -20,7 +20,8 @@
               icon="el-icon-search"
               size="medium"
               @click="getDeploymentList"
-            >搜索</el-button>
+            >搜索
+            </el-button>
           </el-form-item>
         </el-form>
 
@@ -36,7 +37,8 @@
           <el-table-column label="Ready" align="center" :show-overflow-tooltip="true">
             <template
               slot-scope="scope"
-            >{{ scope.row.status.readyReplicas }} / {{ scope.row.status.replicas }}</template>
+            >{{ scope.row.status.readyReplicas }} / {{ scope.row.status.replicas }}
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -64,7 +66,8 @@
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
-              >Yaml</el-button>
+              >Yaml
+              </el-button>
               <el-button
                 v-permisaction="['deployment:deployment:patch']"
                 size="mini"
@@ -93,7 +96,7 @@
 
 <script>
 import { listNamespace } from '@/api/kubernetes/namespace'
-import { listDeployment, getDeployment, restartDeployment } from '@/api/kubernetes/deployment'
+import { getDeployment, listDeployment, restartDeployment } from '@/api/kubernetes/deployment'
 
 export default {
   name: 'Deployment',
@@ -164,7 +167,8 @@ export default {
       }).then(() => {
         this.getDeploymentList()
         this.msgSuccess('重启成功')
-      }).catch(function() {})
+      }).catch(function() {
+      })
     }
   }
 }

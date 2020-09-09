@@ -44,7 +44,8 @@
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
-              >查看详细信息</el-button>
+              >查看详细信息
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -61,7 +62,7 @@
 </template>
 
 <script>
-import { listNamespace, getNamespace } from '@/api/kubernetes/namespace'
+import { getNamespace, listNamespace } from '@/api/kubernetes/namespace'
 
 export default {
   name: 'Namespace',
@@ -125,10 +126,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.el-dialog__body {
-  height: auto;
-  overflow: auto;
-}
-</style>
