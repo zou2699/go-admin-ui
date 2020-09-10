@@ -3,7 +3,7 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-          <el-form-item label="命名空间名称" prop="name">
+          <el-form-item label="命名空间名称" prop="name" label-width="100px">
             <el-input
               v-model="queryParams.name"
               placeholder="请输入命名空间名称"
