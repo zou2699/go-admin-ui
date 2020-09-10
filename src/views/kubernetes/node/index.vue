@@ -65,12 +65,12 @@
           :title="title"
           :visible.sync="open"
           :fullscreen="false"
-          :center="true"
-          width="70%"
-          :destroy-on-close="false"
+          width="1200px"
+          :destroy-on-close="true"
+          class="node_dialog"
         >
-          <el-row :gutter="24">
-            <el-col :span="12" :offset="1">
+          <el-row :gutter="24" class="node-el-row">
+            <el-col :span="12" class="node-el-col">
               <el-card class="nodeInfo-box-card">
                 <div slot="header">
                   <span>系统信息</span>
@@ -101,7 +101,7 @@
               </el-card>
             </el-col>
 
-            <el-col :span="8">
+            <el-col :span="12" class="node-el-col">
               <el-card class="nodeTaints-box-card">
                 <div slot="header">
                   <span>污点</span>
@@ -112,25 +112,27 @@
                 </div>
               </el-card>
             </el-col>
-          </el-row>
 
-          <el-card>
-            <div slot="header">
-              <span>节点状态</span>
-            </div>
-            <el-table :data="nodeConditions" center="true" style="width: 100%">
-              <el-table-column prop="type" label="type" align="center" />
-              <el-table-column prop="status" label="status" align="center" />
-              <el-table-column prop="reason" label="reason" align="center" />
-              <el-table-column prop="message" label="message" align="center" />
-              <el-table-column label="lastHeartbeatTime" align="center">
-                <template slot-scope="scope">{{ scope.row.lastHeartbeatTime | parseTime }}</template>
-              </el-table-column>
-              <el-table-column label="lastTransitionTime" align="center">
-                <template slot-scope="scope">{{ scope.row.lastTransitionTime | parseTime }}</template>
-              </el-table-column>
-            </el-table>
-          </el-card>
+            <el-col :span="24" class="node-el-col">
+              <el-card>
+                <div slot="header">
+                  <span>节点状态</span>
+                </div>
+                <el-table :data="nodeConditions" center="true" style="width: 100%">
+                  <el-table-column prop="type" label="type" align="center" />
+                  <el-table-column prop="status" label="status" align="center" />
+                  <el-table-column prop="reason" label="reason" align="center" />
+                  <el-table-column prop="message" label="message" align="center" />
+                  <el-table-column label="lastHeartbeatTime" align="center">
+                    <template slot-scope="scope">{{ scope.row.lastHeartbeatTime | parseTime }}</template>
+                  </el-table-column>
+                  <el-table-column label="lastTransitionTime" align="center">
+                    <template slot-scope="scope">{{ scope.row.lastTransitionTime | parseTime }}</template>
+                  </el-table-column>
+                </el-table>
+              </el-card>
+            </el-col>
+          </el-row>
         </el-dialog>
       </el-card>
     </template>
@@ -179,10 +181,6 @@ export default {
         this.loading = false
       })
     },
-    // 取消按钮
-    cancel() {
-      this.open = false
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       if (this.queryParams.name) {
@@ -213,21 +211,43 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .nodeInfo-box-card {
-  width: 480px;
+  width: 570px;
   height: 100%;
 }
 .nodeTaints-box-card {
-  width: 480px;
+  width: 570px;
   height: 100%;
 }
-.el-row {
+.node-el-row {
   margin-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
 }
-/* .pagination-small-left {
-    float: right;
-} */
+.node-el-col {
+  margin-bottom: 10px;
+}
+.node_dialog {
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+  overflow: hidden;
+  .el-dialog {
+    margin: 0 auto !important;
+    height: 90%;
+    overflow: hidden;
+    .el-dialog__body {
+      position: absolute;
+      left: 10px;
+      top: 54px;
+      bottom: 0;
+      right: 0;
+      padding: 0;
+      z-index: 1;
+      overflow: hidden;
+      overflow-y: auto;
+    }
+  }
+}
 </style>
