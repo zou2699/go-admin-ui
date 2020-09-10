@@ -66,3 +66,11 @@ export function toThousandFilter(num) {
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+/**
+ * "8009256Ki" => "7.63Gi"
+ * @param {string} string
+ */
+export function kiToGiFilter(string) {
+  return (string.replace('Ki', '') / 1024 / 1024).toFixed(2) + 'Gi'
+}

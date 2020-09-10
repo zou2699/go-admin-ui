@@ -19,38 +19,16 @@
               type="primary"
               icon="el-icon-search"
               size="medium"
-              @click="getDeploymentList"
+              @click="getServicetList"
             >搜索</el-button>
           </el-form-item>
         </el-form>
 
-        <el-table v-loading="loading" stripe style="width: 100%" :data="deploymentList">
-          <el-table-column width="5" align="center" />
-          <el-table-column
-            label="Name"
-            align="center"
-            prop="metadata.name"
-            :show-overflow-tooltip="true"
-          />
+        <el-table v-loading="loading" stripe style="width: 100%" :data="serviceList">
+          <el-table-column label="名称" prop="metadata.name" align="center" />
+          <el-table-column label="类型" prop="spec.type" align="center" />
 
-          <el-table-column label="Ready" align="center" :show-overflow-tooltip="true">
-            <template
-              slot-scope="scope"
-            >{{ scope.row.status.readyReplicas }} / {{ scope.row.status.replicas }}</template>
-          </el-table-column>
-
-          <el-table-column
-            label="Up to Date"
-            align="center"
-            prop="status.updatedReplicas"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column
-            label="Available"
-            align="center"
-            prop="status.availableReplicas"
-            :show-overflow-tooltip="true"
-          />
+          <el-table-column label="ClusterIP" prop="spec.clusterIP" align="center" />
           <el-table-column label="创建时间" align="center">
             <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
           </el-table-column>
@@ -62,22 +40,6 @@
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
               >Yaml</el-button>
-              <router-link
-                :to="'/kubernetes/deployment/'+scope.row.metadata.namespace+'/'+scope.row.metadata.name"
-              >
-                <el-button
-                  v-permisaction="['deployment:deployment:info']"
-                  type="text"
-                  icon="el-icon-info"
-                >view</el-button>
-              </router-link>
-              <el-button
-                v-permisaction="['deployment:deployment:patch']"
-                size="mini"
-                type="text"
-                icon="el-icon-delete"
-                @click="handleRestart(scope.row)"
-              >重启</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -87,7 +49,7 @@
         <!-- 添加或修改对话框 -->
         <el-dialog :title="title" :visible.sync="open" :center="true">
           <el-card>
-            <pre> {{ deploymentInfo }}</pre>
+            <pre> {{ serviceInfo }}</pre>
           </el-card>
         </el-dialog>
       </el-card>
@@ -97,11 +59,7 @@
 
 <script>
 import { listNamespace } from '@/api/kubernetes/namespace'
-import {
-  getDeployment,
-  listDeployment,
-  restartDeployment
-} from '@/api/kubernetes/deployment'
+import { getService, listService } from '@/api/kubernetes/service'
 
 export default {
   name: 'Deployment',
@@ -121,15 +79,15 @@ export default {
       },
       // namespace列表
       namespaceList: [],
-      // deployment列表
-      deploymentList: [],
-      // deployment信息
-      deploymentInfo: {}
+      // service列表
+      serviceList: [],
+      // service信息
+      serviceInfo: {}
     }
   },
   created() {
     this.getNamespaceList()
-    this.getDeploymentList()
+    this.getServicetList()
   },
   methods: {
     /** 查询参数列表 */
@@ -140,46 +98,24 @@ export default {
         this.loading = false
       })
     },
-    getDeploymentList() {
+    getServicetList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
-      listDeployment(namespaceName).then((response) => {
-        this.deploymentList = response.data.items
-        this.total = this.deploymentList.length
+      listService(namespaceName).then((response) => {
+        this.serviceList = response.data.items
+        this.total = this.serviceList.length
         this.loading = false
       })
     },
     /** 查询详细信息按钮操作 */
     handleDetail(row) {
-      const deploymentName = row.metadata.name
+      const serviceName = row.metadata.name
       const namespaceName = row.metadata.namespace
-      getDeployment(namespaceName, deploymentName).then((response) => {
-        this.deploymentInfo = response.data
+      getService(namespaceName, serviceName).then((response) => {
+        this.serviceInfo = response.data
         this.open = true
         this.title = 'deployment信息'
       })
-    },
-    /** 重启deployment按钮操作 */
-    handleRestart(row) {
-      const deploymentName = row.metadata.name
-      const namespaceName = row.metadata.namespace
-      this.$confirm(
-        '是否重启 ' + namespaceName + '/' + deploymentName + ' ?',
-        '警告',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      )
-        .then(function() {
-          return restartDeployment(namespaceName, deploymentName)
-        })
-        .then(() => {
-          this.getDeploymentList()
-          this.msgSuccess('重启成功')
-        })
-        .catch(function() {})
     }
   }
 }

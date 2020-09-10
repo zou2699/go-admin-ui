@@ -30,12 +30,9 @@
             prop="status.phase"
             :show-overflow-tooltip="true"
           />
-          <el-table-column
-            label="创建时间"
-            align="center"
-            prop="metadata.creationTimestamp"
-            :show-overflow-tooltip="true"
-          />
+          <el-table-column label="创建时间" align="center">
+            <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
+          </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -43,8 +40,7 @@
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
-              >查看详细信息
-              </el-button>
+              >查看详细信息</el-button>
             </template>
           </el-table-column>
         </el-table>

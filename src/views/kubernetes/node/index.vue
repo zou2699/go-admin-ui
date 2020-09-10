@@ -58,14 +58,21 @@
           </el-table-column>
         </el-table>
 
-        <el-tag class="pagination-small-left" type="info" effect="plain"> 共{{ total }}条</el-tag>
+        <el-tag type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :fullscreen="true" :center="true">
-          <el-row :gutter="12" class="el-row">
-            <el-col :span="8">
+        <el-dialog
+          :title="title"
+          :visible.sync="open"
+          :fullscreen="false"
+          :center="true"
+          width="70%"
+          :destroy-on-close="false"
+        >
+          <el-row :gutter="24">
+            <el-col :span="12" :offset="1">
               <el-card class="nodeInfo-box-card">
-                <div slot="header" class="clearfix">
+                <div slot="header">
                   <span>系统信息</span>
                 </div>
                 <el-form ref="form" :model="nodeInfo" label-position="left" label-width="150px">
@@ -96,7 +103,7 @@
 
             <el-col :span="8">
               <el-card class="nodeTaints-box-card">
-                <div slot="header" class="clearfix">
+                <div slot="header">
                   <span>污点</span>
                 </div>
                 <div v-for="(nodeTaint,index) in nodeTaints" :key="index">
@@ -108,7 +115,7 @@
           </el-row>
 
           <el-card>
-            <div slot="header" class="clearfix">
+            <div slot="header">
               <span>节点状态</span>
             </div>
             <el-table :data="nodeConditions" center="true" style="width: 100%">
@@ -116,8 +123,12 @@
               <el-table-column prop="status" label="status" align="center" />
               <el-table-column prop="reason" label="reason" align="center" />
               <el-table-column prop="message" label="message" align="center" />
-              <el-table-column prop="lastHeartbeatTime" label="lastHeartbeatTime" align="center" />
-              <el-table-column prop="lastTransitionTime" label="lastTransitionTime" align="center" />
+              <el-table-column label="lastHeartbeatTime" align="center">
+                <template slot-scope="scope">{{ scope.row.lastHeartbeatTime | parseTime }}</template>
+              </el-table-column>
+              <el-table-column label="lastTransitionTime" align="center">
+                <template slot-scope="scope">{{ scope.row.lastTransitionTime | parseTime }}</template>
+              </el-table-column>
             </el-table>
           </el-card>
         </el-dialog>
@@ -171,15 +182,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false
-      this.reset()
     },
-    // 表单重置
-    reset() {
-      this.nodeConditions = []
-      this.nodeInfo = {}
-      this.resetForm('form')
-    },
-
     /** 搜索按钮操作 */
     handleQuery() {
       if (this.queryParams.name) {
@@ -197,14 +200,13 @@ export default {
     },
     /** 查询详细信息按钮操作 */
     handleDetail(row) {
-      this.reset()
       const nodeName = row.metadata.name
       getNode(nodeName).then((response) => {
         this.nodeConditions = response.data.status.conditions
         this.nodeInfo = response.data.status.nodeInfo
         this.nodeTaints = response.data.spec.taints
         this.open = true
-        this.title = '节点信息'
+        this.title = response.data.metadata.name + ' 节点信息'
       })
     }
   }
@@ -212,15 +214,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both;
-}
-
 .nodeInfo-box-card {
   width: 480px;
   height: 100%;
