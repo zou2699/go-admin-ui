@@ -18,12 +18,11 @@
         </el-form>
 
         <el-table v-loading="loading" stripe style="width: 100%" :data="nodeList">
-          <el-table-column
-            label="节点名"
-            align="center"
-            prop="metadata.name"
-            :show-overflow-tooltip="true"
-          />
+          <el-table-column label="节点名" align="center" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.metadata.labels | masterFilter">{{ scope.row.metadata.name }}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="节点IP" align="center" :show-overflow-tooltip="true">
             <template
               slot-scope="scope"
@@ -144,6 +143,15 @@ import { getNode, listNode } from '@/api/kubernetes/node'
 
 export default {
   name: 'Node',
+  filters: {
+    masterFilter(labels) {
+      if ('node-role.kubernetes.io/master' in labels) {
+        return 'success'
+      } else {
+        return ''
+      }
+    }
+  },
   data() {
     return {
       // 遮罩层
