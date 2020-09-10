@@ -23,23 +23,22 @@
               <el-tag :type="scope.row.metadata.labels | masterFilter">{{ scope.row.metadata.name }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="节点IP" align="center" :show-overflow-tooltip="true">
+          <el-table-column label="节点IP" :show-overflow-tooltip="true">
             <template
               slot-scope="scope"
             >{{ scope.row.metadata.annotations['flannel.alpha.coreos.com/public-ip'] }}</template>
           </el-table-column>
-          <el-table-column label="cpu/mem" align="center" :show-overflow-tooltip="true">
+          <el-table-column label="cpu/mem" :show-overflow-tooltip="true">
             <template
               slot-scope="scope"
-            >{{ scope.row.status.capacity.cpu }} / {{ scope.row.status.capacity.memory }}</template>
+            >{{ scope.row.status.capacity.cpu }}C / {{ scope.row.status.capacity.memory | kiToGiFilter }}</template>
           </el-table-column>
           <el-table-column
             label="runc版本"
-            align="center"
             prop="status.nodeInfo.containerRuntimeVersion"
             :show-overflow-tooltip="true"
           />
-          <el-table-column label="creationTimestamp" align="center">
+          <el-table-column label="creationTimestamp">
             <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
           </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
