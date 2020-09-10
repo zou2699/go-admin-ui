@@ -39,12 +39,9 @@
             prop="status.nodeInfo.containerRuntimeVersion"
             :show-overflow-tooltip="true"
           />
-          <el-table-column
-            label="创建时间"
-            align="center"
-            prop="metadata.creationTimestamp"
-            :show-overflow-tooltip="true"
-          />
+          <el-table-column label="creationTimestamp" align="center">
+            <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
+          </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
