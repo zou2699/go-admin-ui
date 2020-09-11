@@ -15,12 +15,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button
-              type="primary"
-              icon="el-icon-search"
-              size="medium"
-              @click="getServicetList"
-            >搜索</el-button>
+            <el-button type="primary" icon="el-icon-search" size="medium" @click="getServiceList">搜索</el-button>
           </el-form-item>
         </el-form>
 
@@ -96,7 +91,7 @@ export default {
   },
   created() {
     this.getNamespaceList()
-    this.getServicetList()
+    this.getServiceList()
   },
   methods: {
     /** 查询参数列表 */
@@ -107,7 +102,7 @@ export default {
         this.loading = false
       })
     },
-    getServicetList() {
+    getServiceList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
       listService(namespaceName).then((response) => {
@@ -129,10 +124,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.el-dialog__body {
-  height: 80vh;
-  overflow: auto;
-}
-</style>
