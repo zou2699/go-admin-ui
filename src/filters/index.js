@@ -74,3 +74,15 @@ export function uppercaseFirst(string) {
 export function kiToGiFilter(string) {
   return (string.replace('Ki', '') / 1024 / 1024).toFixed(2) + 'Gi'
 }
+
+/**
+ * "number" => "tag type"
+ * @param {number} string
+ */
+export function statusFilter(status) {
+  if (status % 2 === 0) {
+    return ''
+  } else {
+    return 'success'
+  }
+}

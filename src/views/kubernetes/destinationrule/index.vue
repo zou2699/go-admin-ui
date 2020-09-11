@@ -15,30 +15,39 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="medium" @click="getGatewayList">搜索</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="medium"
+              @click="getDestinationRuleList"
+            >搜索</el-button>
           </el-form-item>
         </el-form>
 
-        <el-table v-loading="loading" stripe style="width: 100%" :data="gatewayList">
+        <el-table v-loading="loading" stripe style="width: 100%" :data="destinationRuleList">
           <el-table-column label="名称" prop="metadata.name" align="center" />
-          <el-table-column label="selector" align="center">
+          <el-table-column label="host">
+            <template slot-scope="scope">{{ scope.row.spec.host }}</template>
+          </el-table-column>
+
+          <el-table-column label="loadBalancer" align="center">
             <template slot-scope="scope">
-              <div v-for="(value,key) in scope.row.spec.selector" :key="key">
-                <el-tag>{{ key }}: {{ value }}</el-tag>
+              <span>{{ scope.row.spec.trafficPolicy.loadBalancer.simple }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="subsets" align="center">
+            <template slot-scope="scope">
+              <div v-for="(subset,i) in scope.row.spec.subsets" :key="i">
+                <el-tag :type="i| statusFilter" color="white">name: {{ subset.name }}</el-tag>
+
+                <div v-for="(value,key) in subset.labels" :key="key">
+                  <el-tag :type="i| statusFilter" color="white">labels: {{ key }}={{ value }}</el-tag>
+                </div>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="servers" align="center">
-            <template slot-scope="scope">
-              <div v-for="(server,index) in scope.row.spec.servers" :key="index">
-                <el-tag v-for="(host,i) in server.hosts" :key="i">host: {{ host }}</el-tag>
-                <br>
-                <el-tag type="success">name: {{ server.port.name }}</el-tag>
-                <el-tag type="success">port: {{ server.port.number }}</el-tag>
-                <el-tag type="success">protocol: {{ server.port.protocol }}</el-tag>
-              </div>
-            </template>
-          </el-table-column>
+
           <el-table-column label="创建时间" align="center">
             <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
           </el-table-column>
@@ -59,7 +68,7 @@
         <!-- 添加或修改对话框 -->
         <el-dialog :title="title" :visible.sync="open" :center="true">
           <el-card>
-            <pre> {{ gatewayInfo }}</pre>
+            <pre> {{ destinationRuleInfo }}</pre>
           </el-card>
         </el-dialog>
       </el-card>
@@ -69,10 +78,13 @@
 
 <script>
 import { listNamespace } from '@/api/kubernetes/namespace'
-import { getGateway, listGateway } from '@/api/kubernetes/istio'
+import {
+  getDestinationRule,
+  listDestinationRule
+} from '@/api/kubernetes/istio'
 
 export default {
-  name: 'Gateway',
+  name: 'DestinationRule',
   data() {
     return {
       // 遮罩层
@@ -85,19 +97,19 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'default'
+        namespace: 'ecommerce-cloud'
       },
       // namespace列表
       namespaceList: [],
       // service列表
-      gatewayList: [],
+      destinationRuleList: [],
       // service信息
-      gatewayInfo: {}
+      destinationRuleInfo: {}
     }
   },
   created() {
     this.getNamespaceList()
-    this.getGatewayList()
+    this.getDestinationRuleList()
   },
   methods: {
     /** 查询参数列表 */
@@ -108,23 +120,25 @@ export default {
         this.loading = false
       })
     },
-    getGatewayList() {
+    getDestinationRuleList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
-      listGateway(namespaceName).then((response) => {
-        this.gatewayList = response.data.items
-        this.total = this.gatewayList.length
-        this.loading = false
-      })
+      listDestinationRule(namespaceName)
+        .then((response) => {
+          this.destinationRuleList = response.data.items
+          this.total = this.destinationRuleList.length
+          this.loading = false
+        })
+        .catch((this.loading = false))
     },
     /** 查询详细信息按钮操作 */
     handleDetail(row) {
       const serviceName = row.metadata.name
       const namespaceName = row.metadata.namespace
-      getGateway(namespaceName, serviceName).then((response) => {
-        this.gatewayInfo = response.data
+      getDestinationRule(namespaceName, serviceName).then((response) => {
+        this.destinationRuleInfo = response.data
         this.open = true
-        this.title = 'gateway信息'
+        this.title = 'destinationRule信息'
       })
     }
   }

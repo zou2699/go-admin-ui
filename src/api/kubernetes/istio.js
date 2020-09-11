@@ -19,17 +19,17 @@ export function getGateway(namespaceName, gatewayName) {
 }
 
 // 查询VirtualSerivce列表
-export function listVirtualSerivce(namespaceName) {
+export function listVirtualService(namespaceName) {
   return request({
-    url: urlPreix + namespaceName + '/virtuaservices',
+    url: urlPreix + namespaceName + '/virtualservices',
     method: 'get'
   })
 }
 
 // 查询VirtualSerivce详细信息
-export function getVirtuaService(namespaceName, virtuaServiceName) {
+export function getVirtualService(namespaceName, virtualServiceName) {
   return request({
-    url: urlPreix + namespaceName + '/virtuaservices/' + virtuaServiceName,
+    url: urlPreix + namespaceName + '/virtualservices/' + virtualServiceName,
     method: 'get'
   })
 }
