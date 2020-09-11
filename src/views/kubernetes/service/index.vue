@@ -48,7 +48,7 @@
           </el-table-column>
         </el-table>
 
-        <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
+        <el-tag type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
         <el-dialog :title="title" :visible.sync="open" :center="true">
