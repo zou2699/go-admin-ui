@@ -27,8 +27,17 @@
         <el-table v-loading="loading" stripe style="width: 100%" :data="serviceList">
           <el-table-column label="名称" prop="metadata.name" align="center" />
           <el-table-column label="类型" prop="spec.type" align="center" />
-
           <el-table-column label="ClusterIP" prop="spec.clusterIP" align="center" />
+          <el-table-column label="Ports" align="center">
+            <template slot-scope="scope">
+              <div v-for="(port,index) in scope.row.spec.ports" :key="index">
+                <el-tag type="warning">protocol: {{ port.protocol }}</el-tag>
+                <el-tag type="success">port: {{ port.port }}</el-tag>
+                <el-tag v-if="'nodePort' in port">nodePort: {{ port.nodePort }}</el-tag>
+                <br>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label="创建时间" align="center">
             <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
           </el-table-column>
