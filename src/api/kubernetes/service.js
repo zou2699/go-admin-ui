@@ -15,3 +15,12 @@ export function getService(namespaceName, serviceName) {
     method: 'get'
   })
 }
+
+// Change Service
+export function changeService(namespaceName, serviceName, data) {
+  return request({
+    url: '/k8s-api/api/v1/namespaces/' + namespaceName + '/services/' + serviceName,
+    method: 'put',
+    data: data
+  })
+}

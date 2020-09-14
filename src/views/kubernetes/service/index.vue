@@ -52,9 +52,12 @@
 
         <!-- 添加或修改对话框 -->
         <el-dialog :title="title" :visible.sync="open" :center="true">
-          <el-card>
-            <pre> {{ serviceInfo }}</pre>
-          </el-card>
+          <div class="editor-container">
+            <json-editor ref="jsonEditor" v-model="serviceInfo" />
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submitJson">提交</el-button>
+          </div>
         </el-dialog>
       </el-card>
     </template>
@@ -62,11 +65,17 @@
 </template>
 
 <script>
+import JsonEditor from '@/components/JsonEditor'
 import { listNamespace } from '@/api/kubernetes/namespace'
-import { getService, listService } from '@/api/kubernetes/service'
+import {
+  changeService,
+  getService,
+  listService
+} from '@/api/kubernetes/service'
 
 export default {
-  name: 'Deployment',
+  name: 'Service',
+  components: { JsonEditor },
   data() {
     return {
       // 遮罩层
@@ -86,7 +95,11 @@ export default {
       // service列表
       serviceList: [],
       // service信息
-      serviceInfo: {}
+      serviceInfo: {},
+      detailParams: {
+        name: '',
+        namespace: ''
+      }
     }
   },
   created() {
@@ -113,14 +126,49 @@ export default {
     },
     /** 查询详细信息按钮操作 */
     handleDetail(row) {
-      const serviceName = row.metadata.name
-      const namespaceName = row.metadata.namespace
-      getService(namespaceName, serviceName).then((response) => {
-        this.serviceInfo = response.data
-        this.open = true
-        this.title = 'deployment信息'
+      this.detailParams.name = row.metadata.name
+      this.detailParams.namespace = row.metadata.namespace
+      getService(this.detailParams.namespace, this.detailParams.name).then(
+        (response) => {
+          this.serviceInfo = response.data
+          this.open = true
+          this.title = response.data.metadata.name + ' svc信息'
+        }
+      )
+    },
+    submitJson() {
+      console.log(this.serviceInfo)
+      const serviceName = this.detailParams.name
+      const namespaceName = this.detailParams.namespace
+      const serviceInfo = this.serviceInfo
+      this.$confirm(
+        '是否更新 ' + namespaceName + '/' + serviceName + ' ?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        changeService(namespaceName, serviceName, serviceInfo).then(
+          (response) => {
+            if (response.code === 200) {
+              this.msgSuccess('修改成功')
+              this.serviceInfo = response.data
+            } else {
+              this.msgError(response.msg)
+            }
+          }
+        )
       })
     }
   }
 }
 </script>
+
+<style scoped>
+.editor-container {
+  position: relative;
+  height: 100%;
+}
+</style>
