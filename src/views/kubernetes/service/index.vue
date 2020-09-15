@@ -167,6 +167,11 @@ export default {
 </script>
 
 <style scoped>
+.el-dialog__body {
+  height: 80vh;
+  overflow: auto;
+}
+
 .editor-container {
   position: relative;
   height: 100%;
