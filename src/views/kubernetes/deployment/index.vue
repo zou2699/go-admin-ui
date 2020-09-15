@@ -61,7 +61,7 @@
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
-              >Yaml</el-button>
+              >Json</el-button>
               <router-link
                 :to="'/kubernetes/deployment/'+scope.row.metadata.namespace+'/'+scope.row.metadata.name"
               >
@@ -69,7 +69,7 @@
                   v-permisaction="['deployment:deployment:info']"
                   type="text"
                   icon="el-icon-info"
-                >view</el-button>
+                >View</el-button>
               </router-link>
               <el-button
                 v-permisaction="['deployment:deployment:patch']"
@@ -85,10 +85,13 @@
         <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :center="true">
-          <el-card>
-            <pre> {{ deploymentInfo }}</pre>
-          </el-card>
+        <el-dialog :title="title" :visible.sync="open" :center="true" :destroy-on-close="true">
+          <div class="editor-container">
+            <json-editor ref="jsonEditor" v-model="deploymentInfo" />
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submitJson">提交</el-button>
+          </div>
         </el-dialog>
       </el-card>
     </template>
@@ -96,8 +99,11 @@
 </template>
 
 <script>
+import JsonEditor from '@/components/JsonEditor'
+
 import { listNamespace } from '@/api/kubernetes/namespace'
 import {
+  changeDeployment,
   getDeployment,
   listDeployment,
   restartDeployment
@@ -105,6 +111,7 @@ import {
 
 export default {
   name: 'Deployment',
+  components: { JsonEditor },
   data() {
     return {
       // 遮罩层
@@ -124,7 +131,11 @@ export default {
       // deployment列表
       deploymentList: [],
       // deployment信息
-      deploymentInfo: {}
+      deploymentInfo: {},
+      detailParams: {
+        name: '',
+        namespace: ''
+      }
     }
   },
   created() {
@@ -151,13 +162,15 @@ export default {
     },
     /** 查询详细信息按钮操作 */
     handleDetail(row) {
-      const deploymentName = row.metadata.name
-      const namespaceName = row.metadata.namespace
-      getDeployment(namespaceName, deploymentName).then((response) => {
-        this.deploymentInfo = response.data
-        this.open = true
-        this.title = 'deployment信息'
-      })
+      this.detailParams.name = row.metadata.name
+      this.detailParams.namespace = row.metadata.namespace
+      getDeployment(this.detailParams.namespace, this.detailParams.name).then(
+        (response) => {
+          this.deploymentInfo = response.data
+          this.open = true
+          this.title = 'deployment信息'
+        }
+      )
     },
     /** 重启deployment按钮操作 */
     handleRestart(row) {
@@ -180,6 +193,32 @@ export default {
           this.msgSuccess('重启成功')
         })
         .catch(function() {})
+    },
+    submitJson() {
+      // console.log(this.deploymentInfo);
+      const deploymentName = this.detailParams.name
+      const namespaceName = this.detailParams.namespace
+      const deploymentInfo = this.deploymentInfo
+      this.$confirm(
+        '是否更新 ' + namespaceName + '/' + deploymentName + ' ?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        changeDeployment(namespaceName, deploymentName, deploymentInfo).then(
+          (response) => {
+            if (response.code === 200) {
+              this.msgSuccess('修改成功')
+              this.deploymentInfo = response.data
+            } else {
+              this.msgError(response.msg)
+            }
+          }
+        )
+      })
     }
   }
 }

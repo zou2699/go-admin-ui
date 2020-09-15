@@ -61,7 +61,7 @@
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
-              >Yaml</el-button>
+              >Json</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -69,10 +69,13 @@
         <el-tag type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :center="true">
-          <el-card>
-            <pre> {{ serviceEntryInfo }}</pre>
-          </el-card>
+        <el-dialog :title="title" :visible.sync="open" :center="true" :destroy-on-close="true">
+          <div class="editor-container">
+            <json-editor ref="jsonEditor" v-model="serviceEntryInfo" />
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submitJson">提交</el-button>
+          </div>
         </el-dialog>
       </el-card>
     </template>
@@ -80,11 +83,17 @@
 </template>
 
 <script>
+import JsonEditor from '@/components/JsonEditor'
 import { listNamespace } from '@/api/kubernetes/namespace'
-import { getServiceEntry, listServiceEntry } from '@/api/kubernetes/istio'
+import {
+  ChangeServiceEntry,
+  getServiceEntry,
+  listServiceEntry
+} from '@/api/kubernetes/istio'
 
 export default {
   name: 'ServiceEntry',
+  components: { JsonEditor },
   data() {
     return {
       // 遮罩层
@@ -104,7 +113,11 @@ export default {
       // service列表
       serviceEntryList: [],
       // service信息
-      serviceEntryInfo: {}
+      serviceEntryInfo: {},
+      detailParams: {
+        name: '',
+        namespace: ''
+      }
     }
   },
   created() {
@@ -133,12 +146,42 @@ export default {
     },
     /** 查询详细信息按钮操作 */
     handleDetail(row) {
-      const serviceName = row.metadata.name
-      const namespaceName = row.metadata.namespace
-      getServiceEntry(namespaceName, serviceName).then((response) => {
-        this.serviceEntryInfo = response.data
-        this.open = true
-        this.title = 'serviceEntry信息'
+      this.detailParams.name = row.metadata.name
+      this.detailParams.namespace = row.metadata.namespace
+      getServiceEntry(this.detailParams.namespace, this.detailParams.name).then(
+        (response) => {
+          this.serviceEntryInfo = response.data
+          this.open = true
+          this.title = response.data.metadata.name + ' serviceEntry信息'
+        }
+      )
+    },
+    submitJson() {
+      // console.log(this.serviceEntryInfo);
+      const serviceEntryName = this.detailParams.name
+      const namespaceName = this.detailParams.namespace
+      const serviceEntryInfo = this.serviceEntryInfo
+      this.$confirm(
+        '是否更新 ' + namespaceName + '/' + serviceEntryName + ' ?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        ChangeServiceEntry(
+          namespaceName,
+          serviceEntryName,
+          serviceEntryInfo
+        ).then((response) => {
+          if (response.code === 200) {
+            this.msgSuccess('修改成功')
+            this.serviceEntryInfo = response.data
+          } else {
+            this.msgError(response.msg)
+          }
+        })
       })
     }
   }

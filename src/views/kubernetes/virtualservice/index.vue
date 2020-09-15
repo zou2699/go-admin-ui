@@ -72,7 +72,7 @@
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
-              >Yaml</el-button>
+              >Json</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -80,10 +80,13 @@
         <el-tag type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :center="true">
-          <el-card>
-            <pre> {{ virtualServiceInfo }}</pre>
-          </el-card>
+        <el-dialog :title="title" :visible.sync="open" :center="true" :destroy-on-close="true">
+          <div class="editor-container">
+            <json-editor ref="jsonEditor" v-model="virtualServiceInfo" />
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submitJson">提交</el-button>
+          </div>
         </el-dialog>
       </el-card>
     </template>
@@ -91,11 +94,17 @@
 </template>
 
 <script>
+import JsonEditor from '@/components/JsonEditor'
 import { listNamespace } from '@/api/kubernetes/namespace'
-import { getVirtualService, listVirtualService } from '@/api/kubernetes/istio'
+import {
+  ChangeVirtualService,
+  getVirtualService,
+  listVirtualService
+} from '@/api/kubernetes/istio'
 
 export default {
   name: 'VirtualService',
+  components: { JsonEditor },
   data() {
     return {
       // 遮罩层
@@ -115,7 +124,11 @@ export default {
       // service列表
       virtualServiceList: [],
       // service信息
-      virtualServiceInfo: {}
+      virtualServiceInfo: {},
+      detailParams: {
+        name: '',
+        namespace: ''
+      }
     }
   },
   created() {
@@ -144,12 +157,43 @@ export default {
     },
     /** 查询详细信息按钮操作 */
     handleDetail(row) {
-      const serviceName = row.metadata.name
-      const namespaceName = row.metadata.namespace
-      getVirtualService(namespaceName, serviceName).then((response) => {
+      this.detailParams.name = row.metadata.name
+      this.detailParams.namespace = row.metadata.namespace
+      getVirtualService(
+        this.detailParams.namespace,
+        this.detailParams.name
+      ).then((response) => {
         this.virtualServiceInfo = response.data
         this.open = true
-        this.title = 'virtualService信息'
+        this.title = response.data.metadata.name + ' virtualService信息'
+      })
+    },
+    submitJson() {
+      // console.log(this.virtualServiceInfo);
+      const virtualServiceName = this.detailParams.name
+      const namespaceName = this.detailParams.namespace
+      const virtualServiceInfo = this.virtualServiceInfo
+      this.$confirm(
+        '是否更新 ' + namespaceName + '/' + virtualServiceName + ' ?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        ChangeVirtualService(
+          namespaceName,
+          virtualServiceName,
+          virtualServiceInfo
+        ).then((response) => {
+          if (response.code === 200) {
+            this.msgSuccess('修改成功')
+            this.virtualServiceInfo = response.data
+          } else {
+            this.msgError(response.msg)
+          }
+        })
       })
     }
   }

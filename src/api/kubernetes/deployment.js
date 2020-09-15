@@ -23,3 +23,12 @@ export function restartDeployment(namespaceName, deploymentName) {
     method: 'patch'
   })
 }
+
+// 修改deployment
+export function changeDeployment(namespaceName, deploymentName, data) {
+  return request({
+    url: '/k8s-api/apis/apps/v1/namespaces/' + namespaceName + '/deployments/' + deploymentName,
+    method: 'put',
+    data: data
+  })
+}

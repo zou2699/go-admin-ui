@@ -18,6 +18,15 @@ export function getGateway(namespaceName, gatewayName) {
   })
 }
 
+// 修改Gateway
+export function ChangeGateway(namespaceName, gatewayName, data) {
+  return request({
+    url: urlPreix + namespaceName + '/gateways/' + gatewayName,
+    method: 'put',
+    data: data
+  })
+}
+
 // 查询VirtualSerivce列表
 export function listVirtualService(namespaceName) {
   return request({
@@ -31,6 +40,15 @@ export function getVirtualService(namespaceName, virtualServiceName) {
   return request({
     url: urlPreix + namespaceName + '/virtualservices/' + virtualServiceName,
     method: 'get'
+  })
+}
+
+// 修改VirtualSerivce
+export function ChangeVirtualService(namespaceName, virtualServiceName, data) {
+  return request({
+    url: urlPreix + namespaceName + '/virtualservices/' + virtualServiceName,
+    method: 'put',
+    data: data
   })
 }
 
@@ -50,6 +68,15 @@ export function getServiceEntry(namespaceName, serviceEntryName) {
   })
 }
 
+// 修改ServiceEntry
+export function ChangeServiceEntry(namespaceName, serviceEntryName, data) {
+  return request({
+    url: urlPreix + namespaceName + '/serviceentries/' + serviceEntryName,
+    method: 'put',
+    data: data
+  })
+}
+
 // 查询DestinationRule列表
 export function listDestinationRule(namespaceName) {
   return request({
@@ -63,5 +90,14 @@ export function getDestinationRule(namespaceName, destinationRuleName) {
   return request({
     url: urlPreix + namespaceName + '/destinationrules/' + destinationRuleName,
     method: 'get'
+  })
+}
+
+// 修改DestinationRule
+export function ChangeDestinationRule(namespaceName, destinationRuleName, data) {
+  return request({
+    url: urlPreix + namespaceName + '/destinationrules/' + destinationRuleName,
+    method: 'put',
+    data: data
   })
 }

@@ -43,7 +43,7 @@
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
-              >Yaml</el-button>
+              >Json</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -51,7 +51,7 @@
         <el-tag type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :center="true">
+        <el-dialog :title="title" :visible.sync="open" :center="true" :destroy-on-close="true">
           <div class="editor-container">
             <json-editor ref="jsonEditor" v-model="serviceInfo" />
           </div>
@@ -137,7 +137,7 @@ export default {
       )
     },
     submitJson() {
-      console.log(this.serviceInfo)
+      // console.log(this.serviceInfo);
       const serviceName = this.detailParams.name
       const namespaceName = this.detailParams.namespace
       const serviceInfo = this.serviceInfo

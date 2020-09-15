@@ -48,8 +48,15 @@
         <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :center="true">
-          <pre> {{ namespaceInfo }}</pre>
+        <el-dialog :title="title" :visible.sync="open" :center="true" :destroy-on-close="true">
+          <div class="editor-container">
+            <json-editor
+              ref="jsonEditor"
+              v-model="namespaceInfo"
+              :read-only="false"
+              theme="default"
+            />
+          </div>
         </el-dialog>
       </el-card>
     </template>
@@ -57,10 +64,12 @@
 </template>
 
 <script>
+import JsonEditor from '@/components/JsonEditor'
 import { getNamespace, listNamespace } from '@/api/kubernetes/namespace'
 
 export default {
   name: 'Namespace',
+  components: { JsonEditor },
   data() {
     return {
       // 遮罩层
