@@ -34,7 +34,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="hosts" align="center">
+          <el-table-column label="hosts" align="center" width="120px">
             <template slot-scope="scope">
               <div v-for="(host,index) in scope.row.spec.hosts" :key="index">
                 <span>{{ host }}</span>
@@ -46,16 +46,15 @@
             <template slot-scope="scope">
               <div v-for="(h,i) in scope.row.spec.http" :key="i">
                 <div v-for="(m,index) in h.match" :key="'h'+index">
-                  <el-tag :type="i| statusFilter" color="white">prefix: {{ m.uri.prefix }}</el-tag>
+                  <span :class="i | statusFilter">prefix: {{ m.uri.prefix }}</span>
                 </div>
                 <div v-for="(r,index) in h.route" :key="index">
-                  <el-tag
-                    :type="i| statusFilter"
-                    color="white"
-                  >route: {{ r.destination.host }}:{{ r.destination.port.number }}</el-tag>
+                  <span
+                    :class="i | statusFilter"
+                  >route: {{ r.destination.host }}:{{ r.destination.port.number }}</span>
                 </div>
                 <div v-if="'rewrite' in h">
-                  <el-tag :type="i| statusFilter" color="white">rewrite: {{ h.rewrite }}</el-tag>
+                  <span :class="i | statusFilter">rewrite: {{ h.rewrite }}</span>
                 </div>
                 <div />
               </div>
@@ -105,6 +104,15 @@ import {
 export default {
   name: 'VirtualService',
   components: { JsonEditor },
+  filters: {
+    statusFilter(status) {
+      if (status % 2 === 0) {
+        return 'http-match-even'
+      } else {
+        return 'http-match-odd'
+      }
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -204,5 +212,15 @@ export default {
 .editor-container {
   position: relative;
   height: 100%;
+}
+.http-match-even {
+  background-color: white;
+  border-color: #d1e9ff;
+  color: #1890ff;
+}
+.http-match-odd {
+  background-color: white;
+  border-color: #1c6ebb;
+  color: rgb(161, 143, 40);
 }
 </style>
