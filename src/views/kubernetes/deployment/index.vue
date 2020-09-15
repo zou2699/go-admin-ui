@@ -229,4 +229,9 @@ export default {
   height: 80vh;
   overflow: auto;
 }
+
+.editor-container {
+  position: relative;
+  height: 100%;
+}
 </style>
