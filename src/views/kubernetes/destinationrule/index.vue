@@ -66,7 +66,13 @@
         <el-tag type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :center="true" :destroy-on-close="true">
+        <el-dialog
+          :title="title"
+          class="dr-dialog"
+          :visible.sync="open"
+          :center="true"
+          :destroy-on-close="true"
+        >
           <div class="editor-container">
             <json-editor ref="jsonEditor" v-model="destinationRuleInfo" />
           </div>
@@ -186,9 +192,9 @@ export default {
 }
 </script>
 
-<style scoped>
-.el-dialog__body {
-  height: 80vh;
+<style lang="scss">
+.dr-dialog .el-dialog__body {
+  height: 90%;
   overflow: auto;
 }
 

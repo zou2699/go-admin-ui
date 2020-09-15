@@ -85,7 +85,13 @@
         <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :center="true" :destroy-on-close="true">
+        <el-dialog
+          :title="title"
+          class="dp-dialog"
+          :visible.sync="open"
+          :center="true"
+          :destroy-on-close="true"
+        >
           <div class="editor-container">
             <json-editor ref="jsonEditor" v-model="deploymentInfo" />
           </div>
@@ -224,8 +230,8 @@ export default {
 }
 </script>
 
-<style>
-.el-dialog__body {
+<style lang="scss">
+.dp-dialog .el-dialog__body {
   height: 80vh;
   overflow: auto;
 }
