@@ -29,6 +29,21 @@ export function timeAgo(time) {
 }
 
 /**
+ * @param {String} time
+ */
+export function timeStringAgo(time) {
+  time = Date.parse(time)
+  const between = (Date.now() - Number(time)) / 1000
+  if (between < 3600) {
+    return pluralize(~~(between / 60), ' minute')
+  } else if (between < 86400) {
+    return pluralize(~~(between / 3600), ' hour')
+  } else {
+    return pluralize(~~(between / 86400), ' day')
+  }
+}
+
+/**
  * Number formatting
  * like 10000 => 10k
  * @param {number} num
