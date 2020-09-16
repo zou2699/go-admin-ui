@@ -8,7 +8,7 @@
 import CodeMirror from 'codemirror'
 import 'codemirror/addon/lint/lint.css'
 import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/monokai.css'
+import 'codemirror/theme/rubyblue.css'
 import 'codemirror/mode/yaml/yaml'
 import 'codemirror/addon/lint/lint'
 import 'codemirror/addon/lint/yaml-lint'
@@ -37,7 +37,7 @@ export default {
       lineNumbers: true, // 显示行号
       mode: 'text/x-yaml', // 语法model
       gutters: ['CodeMirror-lint-markers'], // 语法检查器
-      theme: 'monokai', // 编辑器主题
+      theme: 'rubyblue', // 编辑器主题
       lint: true // 开启语法检查
     })
 

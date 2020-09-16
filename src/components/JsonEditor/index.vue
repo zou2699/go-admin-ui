@@ -21,8 +21,7 @@ export default {
   // props: ['value'],
   props: {
     value: {
-      type: string,
-      default: ''
+      type: string
     },
     readOnly: {
       type: Boolean,
