@@ -19,9 +19,15 @@
           </el-form-item>
         </el-form>
 
-        <el-table v-loading="loading" stripe style="width: 100%" :data="eventList">
+        <el-table
+          v-loading="loading"
+          stripe
+          style="width: 100%"
+          :data="eventList"
+          :default-sort="{prop:'lastTimestamp', order: 'descending'}"
+        >
           <!-- 时间 类型 原因 对象 来源 消息 -->
-          <el-table-column label="时间">
+          <el-table-column label="时间" prop="lastTimestamp">
             <template slot-scope="scope">{{ scope.row.lastTimestamp | timeStringAgo }}</template>
           </el-table-column>
 
@@ -60,7 +66,7 @@
 
 <script>
 import { listNamespace } from '@/api/kubernetes/namespace'
-import { listEvent } from '@/api/kubernetes/event'
+import { listEvent, watchEventList } from '@/api/kubernetes/event'
 
 export default {
   name: 'Event',
@@ -81,12 +87,18 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'jwell-cloud'
+        namespace: 'demo'
       },
       // namespace列表
       namespaceList: [],
       // deployment列表
       eventList: [],
+      watchParams: {
+        watch: true,
+        resourceVersion: '',
+        timeoutSeconds: 2
+      },
+      timer: 0,
       // deployment信息
       deploymentInfo: {}
     }
@@ -95,6 +107,54 @@ export default {
     this.getNamespaceList()
 
     this.getEventList()
+  },
+  mounted() {
+    if (this.timer) {
+      clearInterval(this.timer)
+    } else {
+      this.timer = setInterval(() => {
+        const namespaceName = this.queryParams.namespace
+        watchEventList(namespaceName, this.watchParams).then((response) => {
+          // console.log(response.data);
+          if (
+            response.data['Type'] !== 'ADDED' &&
+            response.data['Type'] !== 'MODIFIED'
+          ) {
+            console.log('type:', response.data['Type'])
+            return
+          }
+          this.watchParams.resourceVersion =
+            response.data['Object']['metadata']['resourceVersion']
+          this.eventList.push(response.data['Object'])
+
+          if (response.data['Object']['type'] !== 'Normal') {
+            console.log(response.data['Object']['message'])
+            this.$notify({
+              title: '收到警告事件',
+              dangerouslyUseHTMLString: true,
+              message: `
+            <div>Name: ${response.data['Object']['involvedObject']['name']}</div>
+            <div>Message: ${response.data['Object']['message']}</div>
+          `,
+              type: 'warning'
+            })
+          } else {
+            this.$notify({
+              title: '收到普通事件',
+              dangerouslyUseHTMLString: true,
+              message: `
+            <div>Name: ${response.data['Object']['involvedObject']['name']}</div>
+            <div>Message: ${response.data['Object']['message']}</div>
+          `,
+              type: 'success'
+            })
+          }
+        })
+      }, 2000)
+    }
+  },
+  destroyed() {
+    clearInterval(this.timer)
   },
   methods: {
     getNamespaceList() {
@@ -107,6 +167,8 @@ export default {
       const namespaceName = this.queryParams.namespace
       listEvent(namespaceName).then((response) => {
         this.eventList = response.data.items
+        this.watchParams.resourceVersion =
+          response.data.metadata.resourceVersion
         this.total = this.eventList.length
         this.loading = false
       })
