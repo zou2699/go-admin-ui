@@ -38,6 +38,7 @@
           <div>
             <span>Yaml 格式</span>
             <el-button
+              v-permisaction="['createResource:createResource:create']"
               type="primary"
               icon="el-icon-position"
               size="medium"
@@ -49,6 +50,7 @@
           <div>
             <span>Json 格式</span>
             <el-button
+              v-permisaction="['createResource:createResource:create']"
               type="primary"
               icon="el-icon-position"
               size="medium"

@@ -57,7 +57,7 @@
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
-                v-permisaction="['deployment:deployment:query']"
+                v-permisaction="['deployment:deployment:json']"
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
@@ -66,13 +66,13 @@
                 :to="'/kubernetes/deployment/'+scope.row.metadata.namespace+'/'+scope.row.metadata.name"
               >
                 <el-button
-                  v-permisaction="['deployment:deployment:info']"
+                  v-permisaction="['deployment:deployment:detail']"
                   type="text"
                   icon="el-icon-info"
                 >View</el-button>
               </router-link>
               <el-button
-                v-permisaction="['deployment:deployment:patch']"
+                v-permisaction="['deployment:deployment:restart']"
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
@@ -96,7 +96,11 @@
             <json-editor ref="jsonEditor" v-model="deploymentInfo" />
           </div>
           <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitJson">提交</el-button>
+            <el-button
+              v-permisaction="['deployment:deployment:edit']"
+              type="primary"
+              @click="submitJson"
+            >修改</el-button>
           </div>
         </el-dialog>
       </el-card>

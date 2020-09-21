@@ -54,7 +54,7 @@
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
-                v-permisaction="['deployment:deployment:query']"
+                v-permisaction="['destinationRule:destinationRule:json']"
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
@@ -77,7 +77,11 @@
             <json-editor ref="jsonEditor" v-model="destinationRuleInfo" />
           </div>
           <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitJson">提交</el-button>
+            <el-button
+              v-permisaction="['destinationRule:destinationRule:edit']"
+              type="primary"
+              @click="submitJson"
+            >提交修改</el-button>
           </div>
         </el-dialog>
       </el-card>

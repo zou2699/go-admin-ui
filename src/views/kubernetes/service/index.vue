@@ -39,7 +39,7 @@
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
-                v-permisaction="['deployment:deployment:query']"
+                v-permisaction="['service:service:json']"
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
@@ -62,7 +62,11 @@
             <json-editor ref="jsonEditor" v-model="serviceInfo" />
           </div>
           <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitJson">提交</el-button>
+            <el-button
+              v-permisaction="['service:service:edit']"
+              type="primary"
+              @click="submitJson"
+            >提交修改</el-button>
           </div>
         </el-dialog>
       </el-card>

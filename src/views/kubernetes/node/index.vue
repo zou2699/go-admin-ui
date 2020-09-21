@@ -44,7 +44,7 @@
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
-                v-permisaction="['node:node:query']"
+                v-permisaction="['node:node:detail']"
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"

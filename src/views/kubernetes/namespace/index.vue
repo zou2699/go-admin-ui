@@ -36,7 +36,7 @@
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
-                v-permisaction="['namespace:namespace:query']"
+                v-permisaction="['namespace:namespace:detail']"
                 type="text"
                 icon="el-icon-view"
                 @click="handleDetail(scope.row)"
