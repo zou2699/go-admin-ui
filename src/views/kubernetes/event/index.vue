@@ -2,9 +2,17 @@
   <BasicLayout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          label-width="68px"
+        >
           <el-form-item label="命名空间" prop="namespace">
-            <el-select v-model="queryParams.namespace" placeholder="请选择命名空间">
+            <el-select
+              v-model="queryParams.namespace"
+              placeholder="请选择命名空间"
+            >
               <el-option
                 v-for="item in namespaceList"
                 :key="item.metadata.name"
@@ -15,7 +23,12 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="medium" @click="getEventList">搜索</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="medium"
+              @click="getEventList"
+            >搜索</el-button>
           </el-form-item>
         </el-form>
 
@@ -24,16 +37,21 @@
           stripe
           style="width: 100%"
           :data="eventList"
-          :default-sort="{prop:'lastTimestamp', order: 'descending'}"
+          border
+          :default-sort="{ prop: 'lastTimestamp', order: 'descending' }"
         >
           <!-- 时间 类型 原因 对象 来源 消息 -->
           <el-table-column label="时间" prop="lastTimestamp">
-            <template slot-scope="scope">{{ scope.row.lastTimestamp | timeStringAgo }}</template>
+            <template slot-scope="scope">{{
+              scope.row.lastTimestamp | timeStringAgo
+            }}</template>
           </el-table-column>
 
           <el-table-column label="类型">
             <template slot-scope="scope">
-              <el-tag :type="scope.row.type|statusFilter">{{ scope.row.type }}</el-tag>
+              <el-tag :type="scope.row.type | statusFilter">{{
+                scope.row.type
+              }}</el-tag>
             </template>
           </el-table-column>
 
@@ -44,13 +62,16 @@
           <el-table-column label="对象">
             <template
               slot-scope="scope"
-            >{{ scope.row.involvedObject.kind }}: {{ scope.row.involvedObject.name }}</template>
+            >{{ scope.row.involvedObject.kind }}:
+              {{ scope.row.involvedObject.name }}</template>
           </el-table-column>
 
           <el-table-column label="来源">
             <template
               slot-scope="scope"
-            >{{ scope.row.source.component }},{{ scope.row.source.host }}</template>
+            >{{ scope.row.source.component }},{{
+              scope.row.source.host
+            }}</template>
           </el-table-column>
 
           <el-table-column label="消息">
@@ -58,7 +79,11 @@
           </el-table-column>
         </el-table>
 
-        <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
+        <el-tag
+          class="pagination-small-left"
+          type="info"
+          effect="plain"
+        >共{{ total }}条</el-tag>
       </el-card>
     </template>
   </BasicLayout>

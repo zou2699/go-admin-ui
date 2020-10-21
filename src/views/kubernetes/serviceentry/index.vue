@@ -2,9 +2,17 @@
   <BasicLayout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          label-width="68px"
+        >
           <el-form-item label="命名空间" prop="namespace">
-            <el-select v-model="queryParams.namespace" placeholder="请选择命名空间">
+            <el-select
+              v-model="queryParams.namespace"
+              placeholder="请选择命名空间"
+            >
               <el-option
                 v-for="item in namespaceList"
                 :key="item.metadata.name"
@@ -24,18 +32,27 @@
           </el-form-item>
         </el-form>
 
-        <el-table v-loading="loading" stripe style="width: 100%" :data="serviceEntryList">
+        <el-table
+          v-loading="loading"
+          stripe
+          style="width: 100%"
+          :data="serviceEntryList"
+          border
+        >
           <el-table-column label="名称" prop="metadata.name" align="center" />
           <el-table-column label="hosts" align="center">
             <template slot-scope="scope">
-              <div v-for="(host,index) in scope.row.spec.hosts" :key="index">
+              <div v-for="(host, index) in scope.row.spec.hosts" :key="index">
                 <el-tag color="white">{{ host }}</el-tag>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="addresses" align="center">
             <template slot-scope="scope">
-              <div v-for="(address,index) in scope.row.spec.addresses" :key="index">
+              <div
+                v-for="(address, index) in scope.row.spec.addresses"
+                :key="index"
+              >
                 <el-tag color="white">{{ address }}</el-tag>
               </div>
             </template>
@@ -43,18 +60,33 @@
 
           <el-table-column label="ports" align="center">
             <template slot-scope="scope">
-              <div v-for="(port,index) in scope.row.spec.ports" :key="index">
-                <el-tag :type="index | statusFilter" color="white">name: {{ port.name }}</el-tag>
-                <el-tag :type="index | statusFilter" color="white">protocol:{{ port.protocol }}</el-tag>
-                <el-tag :type="index | statusFilter" color="white">number:{{ port.number }}</el-tag>
+              <div v-for="(port, index) in scope.row.spec.ports" :key="index">
+                <el-tag
+                  :type="index | statusFilter"
+                  color="white"
+                >name: {{ port.name }}</el-tag>
+                <el-tag
+                  :type="index | statusFilter"
+                  color="white"
+                >protocol:{{ port.protocol }}</el-tag>
+                <el-tag
+                  :type="index | statusFilter"
+                  color="white"
+                >number:{{ port.number }}</el-tag>
               </div>
             </template>
           </el-table-column>
 
           <el-table-column label="创建时间" align="center">
-            <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
+            <template slot-scope="scope">{{
+              scope.row.metadata.creationTimestamp | parseTime
+            }}</template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['serviceEntry:serviceEntry:json']"

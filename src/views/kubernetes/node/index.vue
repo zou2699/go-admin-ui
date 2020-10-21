@@ -2,7 +2,12 @@
   <BasicLayout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          label-width="68px"
+        >
           <el-form-item label="节点名称" prop="name">
             <el-input
               v-model="queryParams.name"
@@ -13,25 +18,45 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="medium" @click="handleQuery">搜索</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="medium"
+              @click="handleQuery"
+            >搜索</el-button>
           </el-form-item>
         </el-form>
 
-        <el-table v-loading="loading" stripe style="width: 100%" :data="nodeList">
-          <el-table-column label="节点名" align="center" :show-overflow-tooltip="true">
+        <el-table
+          v-loading="loading"
+          stripe
+          style="width: 100%"
+          :data="nodeList"
+          border
+        >
+          <el-table-column
+            label="节点名"
+            align="center"
+            :show-overflow-tooltip="true"
+          >
             <template slot-scope="scope">
-              <el-tag :type="scope.row.metadata.labels | masterFilter">{{ scope.row.metadata.name }}</el-tag>
+              <el-tag :type="scope.row.metadata.labels | masterFilter">{{
+                scope.row.metadata.name
+              }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="节点IP" :show-overflow-tooltip="true">
-            <template
-              slot-scope="scope"
-            >{{ scope.row.metadata.annotations['flannel.alpha.coreos.com/public-ip'] }}</template>
+            <template slot-scope="scope">{{
+              scope.row.metadata.annotations[
+                "flannel.alpha.coreos.com/public-ip"
+              ]
+            }}</template>
           </el-table-column>
           <el-table-column label="cpu/mem" :show-overflow-tooltip="true">
             <template
               slot-scope="scope"
-            >{{ scope.row.status.capacity.cpu }}C / {{ scope.row.status.capacity.memory | kiToGiFilter }}</template>
+            >{{ scope.row.status.capacity.cpu }}C /
+              {{ scope.row.status.capacity.memory | kiToGiFilter }}</template>
           </el-table-column>
           <el-table-column
             label="runc版本"
@@ -39,9 +64,15 @@
             :show-overflow-tooltip="true"
           />
           <el-table-column label="creationTimestamp">
-            <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
+            <template slot-scope="scope">{{
+              scope.row.metadata.creationTimestamp | parseTime
+            }}</template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['node:node:detail']"
@@ -70,7 +101,12 @@
                 <div slot="header">
                   <span>系统信息</span>
                 </div>
-                <el-form ref="form" :model="nodeInfo" label-position="left" label-width="150px">
+                <el-form
+                  ref="form"
+                  :model="nodeInfo"
+                  label-position="left"
+                  label-width="150px"
+                >
                   <el-form-item label="操作系统">
                     <div>{{ nodeInfo.operatingSystem }}</div>
                   </el-form-item>
@@ -101,9 +137,11 @@
                 <div slot="header">
                   <span>污点</span>
                 </div>
-                <div v-for="(nodeTaint,index) in nodeTaints" :key="index">
+                <div v-for="(nodeTaint, index) in nodeTaints" :key="index">
                   <el-tag size="medium">{{ nodeTaint.key }}</el-tag>
-                  <el-tag size="medium" type="warning">{{ nodeTaint.effect }}</el-tag>
+                  <el-tag size="medium" type="warning">{{
+                    nodeTaint.effect
+                  }}</el-tag>
                 </div>
               </el-card>
             </el-col>
@@ -113,16 +151,36 @@
                 <div slot="header">
                   <span>节点状态</span>
                 </div>
-                <el-table :data="nodeConditions" center="true" style="width: 100%">
+                <el-table
+                  :data="nodeConditions"
+                  center="true"
+                  style="width: 100%"
+                >
                   <el-table-column prop="type" label="type" align="center" />
-                  <el-table-column prop="status" label="status" align="center" />
-                  <el-table-column prop="reason" label="reason" align="center" />
-                  <el-table-column prop="message" label="message" align="center" />
+                  <el-table-column
+                    prop="status"
+                    label="status"
+                    align="center"
+                  />
+                  <el-table-column
+                    prop="reason"
+                    label="reason"
+                    align="center"
+                  />
+                  <el-table-column
+                    prop="message"
+                    label="message"
+                    align="center"
+                  />
                   <el-table-column label="lastHeartbeatTime" align="center">
-                    <template slot-scope="scope">{{ scope.row.lastHeartbeatTime | parseTime }}</template>
+                    <template slot-scope="scope">{{
+                      scope.row.lastHeartbeatTime | parseTime
+                    }}</template>
                   </el-table-column>
                   <el-table-column label="lastTransitionTime" align="center">
-                    <template slot-scope="scope">{{ scope.row.lastTransitionTime | parseTime }}</template>
+                    <template slot-scope="scope">{{
+                      scope.row.lastTransitionTime | parseTime
+                    }}</template>
                   </el-table-column>
                 </el-table>
               </el-card>

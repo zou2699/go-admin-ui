@@ -8,24 +8,35 @@
               <div slot="header" class="clearfix">
                 <span>基本信息</span>
               </div>
-              <el-form ref="form" :model="deploymentInfo" label-position="left" label-width="150px">
+              <el-form
+                ref="form"
+                :model="deploymentInfo"
+                label-position="left"
+                label-width="150px"
+              >
                 <el-form-item label="服务名称">
-                  <span>{{ deploymentInfo.metadata.namespace }} / {{ deploymentInfo.metadata.name }}</span>
+                  <span>{{ deploymentInfo.metadata.namespace }} /
+                    {{ deploymentInfo.metadata.name }}</span>
                 </el-form-item>
                 <el-form-item label="服务类型">
                   <span>Deployment</span>
                 </el-form-item>
                 <el-form-item label="副本数">
-                  <span>{{ deploymentInfo.status.availableReplicas }} / {{ deploymentInfo.status.replicas }}</span>
+                  <span>{{ deploymentInfo.status.availableReplicas }} /
+                    {{ deploymentInfo.status.replicas }}</span>
                 </el-form-item>
                 <el-form-item label="标签">
-                  <span v-for="(value,name) in deploymentInfo.metadata.labels" :key="name">
+                  <span
+                    v-for="(value, name) in deploymentInfo.metadata.labels"
+                    :key="name"
+                  >
                     <el-tag>{{ name }}:{{ value }}</el-tag>
                   </span>
                 </el-form-item>
                 <el-form-item label="Selector">
                   <span
-                    v-for="(value,name) in deploymentInfo.spec.selector.matchLabels"
+                    v-for="(value, name) in deploymentInfo.spec.selector
+                      .matchLabels"
                     :key="name"
                   >
                     <el-tag>{{ name }}:{{ value }}</el-tag>
@@ -40,7 +51,11 @@
               <div slot="header" class="clearfix">
                 <span>运行时信息</span>
               </div>
-              <el-table :stripe="true" style="width: 100%" :data="deploymentInfo.status.conditions">
+              <el-table
+                :stripe="true"
+                style="width: 100%"
+                :data="deploymentInfo.status.conditions"
+              >
                 <el-table-column label="type" prop="type" />
                 <el-table-column label="status" prop="status" />
                 <el-table-column label="message" prop="message" />
@@ -57,7 +72,12 @@
               <div slot="header" class="clearfix">
                 <span>部署策略</span>
               </div>
-              <el-form ref="form" :model="deploymentInfo" label-position="left" label-width="150px">
+              <el-form
+                ref="form"
+                :model="deploymentInfo"
+                label-position="left"
+                label-width="150px"
+              >
                 <el-form-item label="类型">
                   <span>{{ deploymentInfo.spec.strategy.type }}</span>
                 </el-form-item>
@@ -70,10 +90,15 @@
                       label-width="150px"
                     >
                       <el-form-item label="最大超出副本数">
-                        <span>{{ deploymentInfo.spec.strategy.rollingUpdate.maxUnavailable }}</span>
+                        <span>{{
+                          deploymentInfo.spec.strategy.rollingUpdate
+                            .maxUnavailable
+                        }}</span>
                       </el-form-item>
                       <el-form-item label="最大不可用副本数">
-                        <span>{{ deploymentInfo.spec.strategy.rollingUpdate.maxSurge }}</span>
+                        <span>{{
+                          deploymentInfo.spec.strategy.rollingUpdate.maxSurge
+                        }}</span>
                       </el-form-item>
                     </el-form>
                   </div>
@@ -87,7 +112,12 @@
               <div slot="header" class="clearfix">
                 <span>service信息</span>
               </div>
-              <el-form ref="form" :model="serviceInfo" label-position="left" label-width="150px">
+              <el-form
+                ref="form"
+                :model="serviceInfo"
+                label-position="left"
+                label-width="150px"
+              >
                 <el-form-item label="类型">
                   <span>{{ serviceInfo.spec.type }}</span>
                 </el-form-item>

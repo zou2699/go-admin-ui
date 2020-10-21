@@ -2,9 +2,17 @@
   <BasicLayout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          label-width="68px"
+        >
           <el-form-item label="命名空间" prop="namespace">
-            <el-select v-model="queryParams.namespace" placeholder="请选择命名空间">
+            <el-select
+              v-model="queryParams.namespace"
+              placeholder="请选择命名空间"
+            >
               <el-option
                 v-for="item in namespaceList"
                 :key="item.metadata.name"
@@ -15,34 +23,59 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="medium" @click="getGatewayList">搜索</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="medium"
+              @click="getGatewayList"
+            >搜索</el-button>
           </el-form-item>
         </el-form>
 
-        <el-table v-loading="loading" stripe style="width: 100%" :data="gatewayList">
+        <el-table
+          v-loading="loading"
+          stripe
+          style="width: 100%"
+          :data="gatewayList"
+          border
+        >
           <el-table-column label="名称" prop="metadata.name" align="center" />
           <el-table-column label="selector" align="center">
             <template slot-scope="scope">
-              <div v-for="(value,key) in scope.row.spec.selector" :key="key">
+              <div v-for="(value, key) in scope.row.spec.selector" :key="key">
                 <el-tag>{{ key }}: {{ value }}</el-tag>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="servers" align="center">
             <template slot-scope="scope">
-              <div v-for="(server,index) in scope.row.spec.servers" :key="index">
-                <el-tag v-for="(host,i) in server.hosts" :key="i">host: {{ host }}</el-tag>
+              <div
+                v-for="(server, index) in scope.row.spec.servers"
+                :key="index"
+              >
+                <el-tag
+                  v-for="(host, i) in server.hosts"
+                  :key="i"
+                >host: {{ host }}</el-tag>
                 <br>
                 <el-tag type="success">name: {{ server.port.name }}</el-tag>
                 <el-tag type="success">port: {{ server.port.number }}</el-tag>
-                <el-tag type="success">protocol: {{ server.port.protocol }}</el-tag>
+                <el-tag
+                  type="success"
+                >protocol: {{ server.port.protocol }}</el-tag>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="创建时间" align="center">
-            <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
+            <template slot-scope="scope">{{
+              scope.row.metadata.creationTimestamp | parseTime
+            }}</template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['gateway:gateway:json']"

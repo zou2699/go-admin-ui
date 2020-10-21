@@ -2,7 +2,12 @@
   <BasicLayout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          label-width="68px"
+        >
           <el-form-item label="岗位编码" prop="postCode">
             <el-input
               v-model="queryParams.postCode"
@@ -22,7 +27,12 @@
             />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="岗位状态" clearable size="small">
+            <el-select
+              v-model="queryParams.status"
+              placeholder="岗位状态"
+              clearable
+              size="small"
+            >
               <el-option
                 v-for="dict in statusOptions"
                 :key="dict.dictValue"
@@ -32,8 +42,17 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="handleQuery"
+            >搜索</el-button>
+            <el-button
+              icon="el-icon-refresh"
+              size="mini"
+              @click="resetQuery"
+            >重置</el-button>
           </el-form-item>
         </el-form>
 
@@ -78,13 +97,28 @@
           </el-col>
         </el-row>
 
-        <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
+        <el-table
+          v-loading="loading"
+          :data="postList"
+          border
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="岗位编号" width="80" align="center" prop="postId" />
+          <el-table-column
+            label="岗位编号"
+            width="80"
+            align="center"
+            prop="postId"
+          />
           <el-table-column label="岗位编码" align="center" prop="postCode" />
           <el-table-column label="岗位名称" align="center" prop="postName" />
           <el-table-column label="岗位排序" align="center" prop="sort" />
-          <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat">
+          <el-table-column
+            label="状态"
+            align="center"
+            prop="status"
+            :formatter="statusFormat"
+          >
             <template slot-scope="scope">
               <el-tag
                 :type="scope.row.status === '1' ? 'danger' : 'success'"
@@ -92,12 +126,21 @@
               >{{ statusFormat(scope.row) }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createdAt" width="180">
+          <el-table-column
+            label="创建时间"
+            align="center"
+            prop="createdAt"
+            width="180"
+          >
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createdAt) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['system:syspost:edit']"
@@ -118,7 +161,7 @@
         </el-table>
 
         <pagination
-          v-show="total>0"
+          v-show="total > 0"
           :total="total"
           :page.sync="queryParams.pageIndex"
           :limit.sync="queryParams.pageSize"
@@ -135,7 +178,11 @@
               <el-input v-model="form.postCode" placeholder="请输入编码名称" />
             </el-form-item>
             <el-form-item label="岗位顺序" prop="sort">
-              <el-input-number v-model="form.sort" controls-position="right" :min="0" />
+              <el-input-number
+                v-model="form.sort"
+                controls-position="right"
+                :min="0"
+              />
             </el-form-item>
             <el-form-item label="岗位状态" prop="status">
               <el-radio-group v-model="form.status">
@@ -147,7 +194,11 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="备注" prop="remark">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+              <el-input
+                v-model="form.remark"
+                type="textarea"
+                placeholder="请输入内容"
+              />
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -161,7 +212,13 @@
 </template>
 
 <script>
-import { listPost, getPost, delPost, addPost, updatePost } from '@/api/system/post'
+import {
+  listPost,
+  getPost,
+  delPost,
+  addPost,
+  updatePost
+} from '@/api/system/post'
 import { formatJson } from '@/utils'
 
 export default {
@@ -212,7 +269,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getDicts('sys_normal_disable').then(response => {
+    this.getDicts('sys_normal_disable').then((response) => {
       this.statusOptions = response.data
     })
   },
@@ -220,7 +277,7 @@ export default {
     /** 查询岗位列表 */
     getList() {
       this.loading = true
-      listPost(this.queryParams).then(response => {
+      listPost(this.queryParams).then((response) => {
         this.postList = response.data.list
         this.total = response.data.count
         this.loading = false
@@ -259,7 +316,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.postId)
+      this.ids = selection.map((item) => item.postId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -274,7 +331,7 @@ export default {
       this.reset()
 
       const postId = row.postId || this.ids
-      getPost(postId).then(response => {
+      getPost(postId).then((response) => {
         this.form = response.data
         this.open = true
         this.title = '修改岗位'
@@ -282,10 +339,10 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      this.$refs['form'].validate(valid => {
+      this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.form.postId !== undefined) {
-            updatePost(this.form).then(response => {
+            updatePost(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess('修改成功')
                 this.open = false
@@ -295,7 +352,7 @@ export default {
               }
             })
           } else {
-            addPost(this.form).then(response => {
+            addPost(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess('新增成功')
                 this.open = false
@@ -311,16 +368,23 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const postIds = row.postId || this.ids
-      this.$confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return delPost(postIds)
-      }).then(() => {
-        this.getList()
-        this.msgSuccess('删除成功')
-      }).catch(function() {})
+      this.$confirm(
+        '是否确认删除岗位编号为"' + postIds + '"的数据项?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+        .then(function() {
+          return delPost(postIds)
+        })
+        .then(() => {
+          this.getList()
+          this.msgSuccess('删除成功')
+        })
+        .catch(function() {})
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -329,23 +393,37 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['岗位编号', '岗位编码', '岗位名称', '排序', '创建时间']
-          const filterVal = ['postId', 'postCode', 'postName', 'sort', 'createdAt']
-          const list = this.postList
-          const data = formatJson(filterVal, list)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: '岗位管理',
-            autoWidth: true, // Optional
-            bookType: 'xlsx' // Optional
+      })
+        .then(() => {
+          this.downloadLoading = true
+          import('@/vendor/Export2Excel').then((excel) => {
+            const tHeader = [
+              '岗位编号',
+              '岗位编码',
+              '岗位名称',
+              '排序',
+              '创建时间'
+            ]
+            const filterVal = [
+              'postId',
+              'postCode',
+              'postName',
+              'sort',
+              'createdAt'
+            ]
+            const list = this.postList
+            const data = formatJson(filterVal, list)
+            excel.export_json_to_excel({
+              header: tHeader,
+              data,
+              filename: '岗位管理',
+              autoWidth: true, // Optional
+              bookType: 'xlsx' // Optional
+            })
+            this.downloadLoading = false
           })
-          this.downloadLoading = false
         })
-      }).catch(function() {})
+        .catch(function() {})
     }
   }
 }

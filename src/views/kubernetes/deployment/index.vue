@@ -2,9 +2,17 @@
   <BasicLayout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          label-width="68px"
+        >
           <el-form-item label="命名空间" prop="namespace">
-            <el-select v-model="queryParams.namespace" placeholder="请选择命名空间">
+            <el-select
+              v-model="queryParams.namespace"
+              placeholder="请选择命名空间"
+            >
               <el-option
                 v-for="item in namespaceList"
                 :key="item.metadata.name"
@@ -24,7 +32,13 @@
           </el-form-item>
         </el-form>
 
-        <el-table v-loading="loading" stripe style="width: 100%" :data="deploymentList">
+        <el-table
+          v-loading="loading"
+          stripe
+          style="width: 100%"
+          :data="deploymentList"
+          border
+        >
           <el-table-column width="5" align="center" />
           <el-table-column
             label="Name"
@@ -33,10 +47,15 @@
             :show-overflow-tooltip="true"
           />
 
-          <el-table-column label="Ready" align="center" :show-overflow-tooltip="true">
+          <el-table-column
+            label="Ready"
+            align="center"
+            :show-overflow-tooltip="true"
+          >
             <template
               slot-scope="scope"
-            >{{ scope.row.status.readyReplicas }} / {{ scope.row.status.replicas }}</template>
+            >{{ scope.row.status.readyReplicas }} /
+              {{ scope.row.status.replicas }}</template>
           </el-table-column>
 
           <el-table-column
@@ -52,9 +71,15 @@
             :show-overflow-tooltip="true"
           />
           <el-table-column label="创建时间" align="center">
-            <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
+            <template slot-scope="scope">{{
+              scope.row.metadata.creationTimestamp | parseTime
+            }}</template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['deployment:deployment:json']"
@@ -63,7 +88,12 @@
                 @click="handleDetail(scope.row)"
               >Json</el-button>
               <router-link
-                :to="'/kubernetes/deployment/'+scope.row.metadata.namespace+'/'+scope.row.metadata.name"
+                :to="
+                  '/kubernetes/deployment/' +
+                    scope.row.metadata.namespace +
+                    '/' +
+                    scope.row.metadata.name
+                "
               >
                 <el-button
                   v-permisaction="['deployment:deployment:detail']"
@@ -82,7 +112,11 @@
           </el-table-column>
         </el-table>
 
-        <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
+        <el-tag
+          class="pagination-small-left"
+          type="info"
+          effect="plain"
+        >共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
         <el-dialog

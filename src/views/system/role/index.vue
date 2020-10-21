@@ -52,8 +52,17 @@
             />
           </el-form-item> -->
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="handleQuery"
+            >搜索</el-button>
+            <el-button
+              icon="el-icon-refresh"
+              size="mini"
+              @click="resetQuery"
+            >重置</el-button>
           </el-form-item>
         </el-form>
 
@@ -98,11 +107,26 @@
           </el-col>
         </el-row>
 
-        <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
+        <el-table
+          v-loading="loading"
+          :data="roleList"
+          border
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column label="角色编号" prop="roleId" width="120" />
-          <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
+          <el-table-column
+            label="角色名称"
+            prop="roleName"
+            :show-overflow-tooltip="true"
+            width="150"
+          />
+          <el-table-column
+            label="权限字符"
+            prop="roleKey"
+            :show-overflow-tooltip="true"
+            width="150"
+          />
           <el-table-column label="显示顺序" prop="roleSort" width="100" />
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="scope">
@@ -114,12 +138,21 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createdAt" width="180">
+          <el-table-column
+            label="创建时间"
+            align="center"
+            prop="createdAt"
+            width="180"
+          >
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createdAt) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['system:sysrole:edit']"
@@ -147,7 +180,7 @@
         </el-table>
 
         <pagination
-          v-show="total>0"
+          v-show="total > 0"
           :total="total"
           :page.sync="queryParams.pageIndex"
           :limit.sync="queryParams.pageSize"
@@ -158,13 +191,25 @@
         <el-dialog :title="title" :visible.sync="open" width="500px">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px">
             <el-form-item label="角色名称" prop="roleName">
-              <el-input v-model="form.roleName" placeholder="请输入角色名称" :disabled="isEdit" />
+              <el-input
+                v-model="form.roleName"
+                placeholder="请输入角色名称"
+                :disabled="isEdit"
+              />
             </el-form-item>
             <el-form-item label="权限字符" prop="roleKey">
-              <el-input v-model="form.roleKey" placeholder="请输入权限字符" :disabled="isEdit" />
+              <el-input
+                v-model="form.roleKey"
+                placeholder="请输入权限字符"
+                :disabled="isEdit"
+              />
             </el-form-item>
             <el-form-item label="角色顺序" prop="roleSort">
-              <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
+              <el-input-number
+                v-model="form.roleSort"
+                controls-position="right"
+                :min="0"
+              />
             </el-form-item>
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
@@ -186,7 +231,11 @@
               />
             </el-form-item>
             <el-form-item label="备注">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+              <el-input
+                v-model="form.remark"
+                type="textarea"
+                placeholder="请输入内容"
+              />
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -237,16 +286,28 @@
 </template>
 
 <script>
-import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus } from '@/api/system/role'
-import { treeselect as menuTreeselect, roleMenuTreeselect } from '@/api/system/menu'
-import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/dept'
+import {
+  listRole,
+  getRole,
+  delRole,
+  addRole,
+  updateRole,
+  dataScope,
+  changeRoleStatus
+} from '@/api/system/role'
+import {
+  treeselect as menuTreeselect,
+  roleMenuTreeselect
+} from '@/api/system/menu'
+import {
+  treeselect as deptTreeselect,
+  roleDeptTreeselect
+} from '@/api/system/dept'
 import { formatJson } from '@/utils'
 
 export default {
   name: 'Role',
-  components: {
-
-  },
+  components: {},
   data() {
     return {
       // 遮罩层
@@ -329,7 +390,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getDicts('sys_normal_disable').then(response => {
+    this.getDicts('sys_normal_disable').then((response) => {
       this.statusOptions = response.data
     })
   },
@@ -338,7 +399,7 @@ export default {
     getList() {
       this.loading = true
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
-        response => {
+        (response) => {
           this.roleList = response.data.list
           this.total = response.data.count
           this.loading = false
@@ -347,13 +408,13 @@ export default {
     },
     /** 查询菜单树结构 */
     getMenuTreeselect() {
-      menuTreeselect().then(response => {
+      menuTreeselect().then((response) => {
         this.menuOptions = response.data
       })
     },
     /** 查询部门树结构 */
     getDeptTreeselect() {
-      deptTreeselect().then(response => {
+      deptTreeselect().then((response) => {
         this.deptOptions = response.data.list
       })
     },
@@ -377,7 +438,7 @@ export default {
     },
     /** 根据角色ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId) {
-      roleMenuTreeselect(roleId).then(response => {
+      roleMenuTreeselect(roleId).then((response) => {
         this.menuOptions = response.menus
         this.$nextTick(() => {
           this.$refs.menu.setCheckedKeys(response.checkedKeys)
@@ -386,7 +447,7 @@ export default {
     },
     /** 根据角色ID查询部门树结构 */
     getRoleDeptTreeselect(roleId) {
-      roleDeptTreeselect(roleId).then(response => {
+      roleDeptTreeselect(roleId).then((response) => {
         this.deptOptions = response.depts
         this.$nextTick(() => {
           this.$refs.dept.setCheckedKeys(response.checkedKeys)
@@ -396,17 +457,24 @@ export default {
     // 角色状态修改
     handleStatusChange(row) {
       const text = row.status === '0' ? '启用' : '停用'
-      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return changeRoleStatus(row.roleId, row.status)
-      }).then(() => {
-        this.msgSuccess(text + '成功')
-      }).catch(function() {
-        row.status = row.status === '0' ? '1' : '0'
-      })
+      this.$confirm(
+        '确认要"' + text + '""' + row.roleName + '"角色吗?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+        .then(function() {
+          return changeRoleStatus(row.roleId, row.status)
+        })
+        .then(() => {
+          this.msgSuccess(text + '成功')
+        })
+        .catch(function() {
+          row.status = row.status === '0' ? '1' : '0'
+        })
     },
     // 取消按钮
     cancel() {
@@ -448,7 +516,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.roleId)
+      this.ids = selection.map((item) => item.roleId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -464,7 +532,7 @@ export default {
     handleUpdate(row) {
       this.reset()
       const roleId = row.roleId || this.ids
-      getRole(roleId).then(response => {
+      getRole(roleId).then((response) => {
         this.form = response.data
         this.open = true
         this.title = '修改角色'
@@ -475,7 +543,7 @@ export default {
     /** 分配数据权限操作 */
     handleDataScope(row) {
       this.reset()
-      getRole(row.roleId).then(response => {
+      getRole(row.roleId).then((response) => {
         this.form = response.data
         this.openDataScope = true
         this.title = '分配数据权限'
@@ -484,11 +552,11 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      this.$refs['form'].validate(valid => {
+      this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.form.roleId !== undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys()
-            updateRole(this.form).then(response => {
+            updateRole(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess('修改成功')
                 this.open = false
@@ -499,7 +567,7 @@ export default {
             })
           } else {
             this.form.menuIds = this.getMenuAllCheckedKeys()
-            addRole(this.form).then(response => {
+            addRole(this.form).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess('新增成功')
                 this.open = false
@@ -517,7 +585,7 @@ export default {
       if (this.form.roleId !== undefined) {
         this.form.deptIds = this.getDeptAllCheckedKeys()
         console.log(this.getDeptAllCheckedKeys())
-        dataScope(this.form).then(response => {
+        dataScope(this.form).then((response) => {
           if (response.code === 200) {
             this.msgSuccess('修改成功')
             this.openDataScope = false
@@ -531,16 +599,23 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const roleIds = row.roleId || this.ids
-      this.$confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return delRole(roleIds)
-      }).then(() => {
-        this.getList()
-        this.msgSuccess('删除成功')
-      }).catch(function() {})
+      this.$confirm(
+        '是否确认删除角色编号为"' + roleIds + '"的数据项?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+        .then(function() {
+          return delRole(roleIds)
+        })
+        .then(() => {
+          this.getList()
+          this.msgSuccess('删除成功')
+        })
+        .catch(function() {})
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -550,9 +625,23 @@ export default {
         type: 'warning'
       }).then(() => {
         this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['角色编号', '角色名称', '权限字符', '显示顺序', '状态', '创建时间']
-          const filterVal = ['roleId', 'roleName', 'roleKey', 'roleSort', 'status', 'createdAt']
+        import('@/vendor/Export2Excel').then((excel) => {
+          const tHeader = [
+            '角色编号',
+            '角色名称',
+            '权限字符',
+            '显示顺序',
+            '状态',
+            '创建时间'
+          ]
+          const filterVal = [
+            'roleId',
+            'roleName',
+            'roleKey',
+            'roleSort',
+            'status',
+            'createdAt'
+          ]
           const list = this.roleList
           const data = formatJson(filterVal, list)
           excel.export_json_to_excel({

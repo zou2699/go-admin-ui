@@ -2,7 +2,12 @@
   <BasicLayout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          label-width="68px"
+        >
           <el-form-item label="命名空间名称" prop="name" label-width="100px">
             <el-input
               v-model="queryParams.name"
@@ -13,11 +18,22 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="medium" @click="handleQuery">搜索</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="medium"
+              @click="handleQuery"
+            >搜索</el-button>
           </el-form-item>
         </el-form>
 
-        <el-table v-loading="loading" stripe style="width: 100%" :data="namespaceList">
+        <el-table
+          v-loading="loading"
+          stripe
+          style="width: 100%"
+          :data="namespaceList"
+          border
+        >
           <el-table-column
             label="命名空间"
             align="center"
@@ -31,9 +47,15 @@
             :show-overflow-tooltip="true"
           />
           <el-table-column label="创建时间" align="center">
-            <template slot-scope="scope">{{ scope.row.metadata.creationTimestamp | parseTime }}</template>
+            <template slot-scope="scope">{{
+              scope.row.metadata.creationTimestamp | parseTime
+            }}</template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['namespace:namespace:detail']"
@@ -45,10 +67,19 @@
           </el-table-column>
         </el-table>
 
-        <el-tag class="pagination-small-left" type="info" effect="plain">共{{ total }}条</el-tag>
+        <el-tag
+          class="pagination-small-left"
+          type="info"
+          effect="plain"
+        >共{{ total }}条</el-tag>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="title" :visible.sync="open" :center="true" :destroy-on-close="true">
+        <el-dialog
+          :title="title"
+          :visible.sync="open"
+          :center="true"
+          :destroy-on-close="true"
+        >
           <div class="editor-container">
             <json-editor
               ref="jsonEditor"
