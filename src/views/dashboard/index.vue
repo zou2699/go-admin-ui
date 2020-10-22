@@ -1,30 +1,26 @@
 <template>
   <div class="dashboard-container">
-    <component :is="currentRole" />
+    <adminDashboard v-if="dashboardStatus" :dashboard-value="dashboardValue" />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import adminDashboard from './admin'
+import { initData } from '@/api/dashboard'
 
 export default {
   name: 'Dashboard',
   components: { adminDashboard },
   data() {
     return {
-      currentRole: 'adminDashboard'
+      dashboardStatus: false
     }
   },
-  computed: {
-    ...mapGetters([
-      'roles'
-    ])
-  },
   created() {
-    // if (!this.roles.includes('admin')) {
-    //   this.currentRole = 'editorDashboard'
-    // }
+    initData().then((response) => {
+      this.dashboardValue = response.data
+      this.dashboardStatus = true
+    })
   }
 }
 </script>

@@ -317,7 +317,7 @@ $cursor: #fff;
   height: 100%;
   margin: 0 auto;
   background: url("../../assets/login.png") no-repeat;
-  background-color: #0e6cff;
+  background-color: #4176cc;
   position: relative;
   background-size: cover;
   height: 100vh;
