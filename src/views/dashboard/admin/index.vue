@@ -1,10 +1,10 @@
 <template>
   <div class="dashboard-editor-container">
     <panel-group :panel-group-value="dashboardValue.panelGroup" />
-
+    <!--
     <el-row style="background: #fff; padding: 16px 16px 0; margin-bottom: 32px">
       <line-chart :statistics-data="dashboardValue.statisticsData" />
-    </el-row>
+    </el-row> -->
 
     <el-row :gutter="32">
       <div class="chart-wrapper">
@@ -28,7 +28,7 @@
 
 <script>
 import PanelGroup from './components/PanelGroup'
-import LineChart from './components/LineChart'
+// import LineChart from './components/LineChart'
 import TicketSubmissionRanking from './components/TicketSubmissionRanking'
 // import processOrderList from "./components/processOrderList";
 // import TodoWorkOrderRanking from './components/TodoWorkOrderRanking'
@@ -38,7 +38,7 @@ export default {
   name: 'DashboardAdmin',
   components: {
     PanelGroup,
-    LineChart,
+    // LineChart,
     TicketSubmissionRanking
     // processOrderList,
     // TodoWorkOrderRanking,
