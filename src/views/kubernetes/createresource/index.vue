@@ -10,7 +10,10 @@
           label-width="68px"
         >
           <el-form-item label="命名空间" prop="namespace">
-            <el-select v-model="createParams.namespace" placeholder="请选择命名空间">
+            <el-select
+              v-model="createParams.namespace"
+              placeholder="请选择命名空间"
+            >
               <el-option
                 v-for="item in namespaceList"
                 :key="item.metadata.name"
@@ -30,35 +33,34 @@
               />
             </el-select>
           </el-form-item>
-
-          <el-form-item />
         </el-form>
 
-        <div class="editor-container">
-          <div>
-            <span>Yaml 格式</span>
-            <el-button
-              v-permisaction="['createResource:createResource:create']"
-              type="primary"
-              icon="el-icon-position"
-              size="medium"
-              @click="handleCreate('yaml',resourceYamlInfo)"
-            >创建</el-button>
-          </div>
-
-          <yaml-editor ref="yamlEditor" v-model="resourceYamlInfo" />
-          <div>
-            <span>Json 格式</span>
-            <el-button
-              v-permisaction="['createResource:createResource:create']"
-              type="primary"
-              icon="el-icon-position"
-              size="medium"
-              @click="handleCreate('json',resourceJsonInfo)"
-            >创建</el-button>
-          </div>
-          <json-editor ref="jsonEditor" v-model="resourceJsonInfo" />
-        </div>
+        <el-tabs v-model="activeName" type="card">
+          <el-tab-pane label="Yaml 格式" name="first">
+            <div class="yaml">
+              <yaml-editor ref="yamlEditor" v-model="resourceYamlInfo" />
+              <el-button
+                v-permisaction="['createResource:createResource:create']"
+                type="primary"
+                icon="el-icon-position"
+                size="medium"
+                @click="handleCreate('yaml', resourceYamlInfo)"
+              >创建</el-button>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="Json 格式" name="second">
+            <div class="json">
+              <json-editor ref="jsonEditor" v-model="resourceJsonInfo" />
+              <el-button
+                v-permisaction="['createResource:createResource:create']"
+                type="primary"
+                icon="el-icon-position"
+                size="medium"
+                @click="handleCreate('json', resourceJsonInfo)"
+              >创建</el-button>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </el-card>
     </template>
   </BasicLayout>
@@ -77,6 +79,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      activeName: 'second',
       kinds: [
         { key: 'deployment', display_name: 'deployment' },
         { key: 'service', display_name: 'service' },
@@ -150,3 +153,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.yaml {
+  width: 480;
+  height: 100%;
+}
+.json {
+  width: 480;
+  height: 100%;
+}
+</style>

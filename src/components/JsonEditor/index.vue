@@ -13,7 +13,6 @@ require('script-loader!jsonlint')
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/addon/lint/lint'
 import 'codemirror/addon/lint/json-lint'
-import { string } from 'clipboard'
 
 export default {
   name: 'JsonEditor',
@@ -21,14 +20,14 @@ export default {
   // props: ['value'],
   props: {
     value: {
-      type: string
+      type: String
     },
     readOnly: {
       type: Boolean,
       default: false
     },
     theme: {
-      type: string,
+      type: String,
       default: 'rubyblue'
     }
   },
