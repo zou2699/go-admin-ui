@@ -3,7 +3,7 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
         <div class="card-panel-icon-wrapper">
-          <svg-icon icon-class="yonghu" class-name="card-panel-icon" />
+          <svg-icon icon-class="userCount" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">用户总数</div>
@@ -18,8 +18,8 @@
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
-        <div class="card-panel-icon-wrapper icon-gongdanshuju">
-          <svg-icon icon-class="gongdanshuju" class-name="card-panel-icon" />
+        <div class="card-panel-icon-wrapper icon-loginCount">
+          <svg-icon icon-class="loginCount" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">登录总数</div>
@@ -34,8 +34,24 @@
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
+        <div class="card-panel-icon-wrapper icon-gongdanshuju">
+          <svg-icon icon-class="promFiring" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">正在报警数</div>
+          <count-to
+            :start-val="0"
+            :end-val="panelGroupValue.prom_firing_count"
+            :duration="2200"
+            class="card-panel-num"
+          />
+        </div>
+      </div>
+    </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel">
         <div class="card-panel-icon-wrapper">
-          <svg-icon icon-class="chaoqigongdan" class-name="card-panel-icon" />
+          <svg-icon icon-class="node" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">Node总数</div>
@@ -51,7 +67,7 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
         <div class="card-panel-icon-wrapper">
-          <svg-icon icon-class="wodegongdan" class-name="card-panel-icon" />
+          <svg-icon icon-class="pod" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">Pod总数</div>
