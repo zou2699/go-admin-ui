@@ -19,9 +19,7 @@ export default {
   /* eslint-disable vue/require-prop-types */
   // props: ['value'],
   props: {
-    value: {
-      type: String
-    },
+    value: undefined,
     readOnly: {
       type: Boolean,
       default: false

@@ -141,7 +141,7 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'ecommerce-cloud'
+        namespace: this.$store.state.kubernetes.namespace
       },
       // namespace列表
       namespaceList: [],
@@ -171,6 +171,7 @@ export default {
     getDestinationRuleList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
+      this.$store.dispatch('kubernetes/changeNamespace', namespaceName)
       listDestinationRule(namespaceName)
         .then((response) => {
           this.destinationRuleList = response.data.items

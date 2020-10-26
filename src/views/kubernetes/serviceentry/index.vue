@@ -148,7 +148,7 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'ecommerce-cloud'
+        namespace: this.$store.state.kubernetes.namespace
       },
       // namespace列表
       namespaceList: [],
@@ -178,6 +178,7 @@ export default {
     getServiceEntryList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
+      this.$store.dispatch('kubernetes/changeNamespace', namespaceName)
       listServiceEntry(namespaceName)
         .then((response) => {
           this.serviceEntryList = response.data.items

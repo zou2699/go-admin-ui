@@ -129,7 +129,7 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'default'
+        namespace: this.$store.state.kubernetes.namespace
       },
       // namespace列表
       namespaceList: [],
@@ -159,6 +159,7 @@ export default {
     getServiceList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
+      this.$store.dispatch('kubernetes/changeNamespace', namespaceName)
       listService(namespaceName).then((response) => {
         this.serviceList = response.data.items
         this.total = this.serviceList.length

@@ -164,7 +164,7 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'ecommerce-cloud'
+        namespace: this.$store.state.kubernetes.namespace
       },
       // namespace列表
       namespaceList: [],
@@ -194,6 +194,7 @@ export default {
     getVirtualServiceList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
+      this.$store.dispatch('kubernetes/changeNamespace', namespaceName)
       listVirtualService(namespaceName)
         .then((response) => {
           this.virtualServiceList = response.data.items

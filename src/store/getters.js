@@ -12,6 +12,7 @@ const getters = {
   permisaction: state => state.user.permisaction,
   permission_routes: state => state.permission.routes,
   errorLogs: state => state.errorLog.logs,
-  appInfo: state => state.system.info
+  appInfo: state => state.system.info,
+  k8sNamespace: state => state.kubernetes.namespace
 }
 export default getters

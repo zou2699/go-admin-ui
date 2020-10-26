@@ -112,7 +112,7 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'demo'
+        namespace: this.$store.state.kubernetes.namespace
       },
       // namespace列表
       namespaceList: [],
@@ -190,6 +190,7 @@ export default {
     getEventList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
+      this.$store.dispatch('kubernetes/changeNamespace', namespaceName)
       listEvent(namespaceName).then((response) => {
         this.eventList = response.data.items
         this.watchParams.resourceVersion =

@@ -133,7 +133,7 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'default'
+        namespace: this.$store.state.kubernetes.namespace
       },
       // namespace列表
       namespaceList: [],
@@ -163,6 +163,7 @@ export default {
     getGatewayList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
+      this.$store.dispatch('kubernetes/changeNamespace', namespaceName)
       listGateway(namespaceName).then((response) => {
         this.gatewayList = response.data.items
         this.total = this.gatewayList.length

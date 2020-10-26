@@ -88,7 +88,7 @@ export default {
       ],
       // 查询参数
       createParams: {
-        namespace: 'default',
+        namespace: this.$store.state.kubernetes.namespace,
         kind: ''
       },
 
@@ -125,6 +125,7 @@ export default {
       this.$refs['createForm'].validate((valid) => {
         if (valid) {
           const namespace = this.createParams.namespace
+          this.$store.dispatch('kubernetes/changeNamespace', namespace)
           const kind = this.createParams.kind
           this.$confirm('是否创建 ' + namespace + '/' + kind + ' ?', '警告', {
             confirmButtonText: '确定',

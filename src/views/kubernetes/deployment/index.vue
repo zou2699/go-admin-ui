@@ -39,7 +39,6 @@
           :data="deploymentList"
           border
         >
-          <el-table-column width="5" align="center" />
           <el-table-column
             label="Name"
             align="center"
@@ -168,7 +167,7 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        namespace: 'default'
+        namespace: this.$store.state.kubernetes.namespace
       },
       // namespace列表
       namespaceList: [],
@@ -182,6 +181,16 @@ export default {
       }
     }
   },
+  // computed: {
+  //   k8sNamespace: {
+  //     get() {
+  //       return this.$store.state.kubernetes.namespace
+  //     },
+  //     set(val) {
+  //       this.$store.dispatch('kubernetes/changeNamespace', val)
+  //     }
+  //   }
+  // },
   created() {
     this.getNamespaceList()
     this.getDeploymentList()
@@ -198,6 +207,7 @@ export default {
     getDeploymentList() {
       this.loading = true
       const namespaceName = this.queryParams.namespace
+      this.$store.dispatch('kubernetes/changeNamespace', namespaceName)
       listDeployment(namespaceName).then((response) => {
         this.deploymentList = response.data.items
         this.total = this.deploymentList.length
