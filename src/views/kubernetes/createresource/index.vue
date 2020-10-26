@@ -36,31 +36,29 @@
         </el-form>
 
         <el-tabs v-model="activeName" type="card">
-          <el-tab-pane label="Yaml 格式" name="first">
-            <div class="yaml">
-              <yaml-editor ref="yamlEditor" v-model="resourceYamlInfo" />
-              <el-button
-                v-permisaction="['createResource:createResource:create']"
-                type="primary"
-                icon="el-icon-position"
-                size="medium"
-                @click="handleCreate('yaml', resourceYamlInfo)"
-              >创建</el-button>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="Json 格式" name="second">
-            <div class="json">
-              <json-editor ref="jsonEditor" v-model="resourceJsonInfo" />
-              <el-button
-                v-permisaction="['createResource:createResource:create']"
-                type="primary"
-                icon="el-icon-position"
-                size="medium"
-                @click="handleCreate('json', resourceJsonInfo)"
-              >创建</el-button>
-            </div>
-          </el-tab-pane>
+          <el-tab-pane label="Yaml 格式" name="yaml" />
+          <el-tab-pane label="Json 格式" name="json" />
         </el-tabs>
+        <div v-if="activeName == 'yaml'">
+          <yaml-editor ref="yamlEditor" v-model="resourceYamlInfo" />
+          <el-button
+            v-permisaction="['createResource:createResource:create']"
+            type="primary"
+            icon="el-icon-position"
+            size="medium"
+            @click="handleCreate('yaml', resourceYamlInfo)"
+          >创建</el-button>
+        </div>
+        <div v-if="activeName == 'json'">
+          <json-editor ref="jsonEditor" v-model="resourceJsonInfo" />
+          <el-button
+            v-permisaction="['createResource:createResource:create']"
+            type="primary"
+            icon="el-icon-position"
+            size="medium"
+            @click="handleCreate('json', resourceJsonInfo)"
+          >创建</el-button>
+        </div>
       </el-card>
     </template>
   </BasicLayout>
@@ -79,7 +77,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
-      activeName: 'second',
+      activeName: 'yaml',
       kinds: [
         { key: 'deployment', display_name: 'deployment' },
         { key: 'service', display_name: 'service' },
@@ -154,13 +152,3 @@ export default {
 }
 </script>
 
-<style scoped>
-.yaml {
-  width: 480;
-  height: 100%;
-}
-.json {
-  width: 480;
-  height: 100%;
-}
-</style>
