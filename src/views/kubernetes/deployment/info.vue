@@ -67,7 +67,7 @@
         </el-row>
 
         <el-row :gutter="12" class="el-row">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-card class="second-box-card">
               <div slot="header" class="clearfix">
                 <span>部署策略</span>
@@ -107,7 +107,7 @@
             </el-card>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="12">
             <el-card class="second-box-card">
               <div slot="header" class="clearfix">
                 <span>service信息</span>
@@ -142,24 +142,157 @@
               </el-card>
             </el-card>
           </el-col>
+
         </el-row>
 
         <el-row :gutter="12" class="el-row">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-card class="second-box-card">
               <div slot="header" class="clearfix">
-                <span>Pod信息</span>
+                <span>副本集 ReplicaSets</span>
+                <el-table :data="replicasetList" height="350px">
+                  <el-table-column label="名称" prop="metadata.name" />
+                  <el-table-column label="期望" prop="status.replicas" />
+                  <el-table-column label="当前" prop="status.availableReplicas" />
+                  <el-table-column label="就绪" prop="status.readyReplicas" />
+                  <el-table-column label="已创建">
+                    <template slot-scope="scope">{{
+                      scope.row.metadata.creationTimestamp | timeStringAgo
+                    }}</template>
+                  </el-table-column>
+                  <el-table-column label="版本">
+                    <template slot-scope="scope">{{
+                      scope.row.metadata.annotations['deployment.kubernetes.io/revision']
+                    }}</template>
+                  </el-table-column>
+                </el-table>
               </div>
             </el-card>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="12">
             <el-card class="second-box-card">
               <div slot="header" class="clearfix">
-                <span>Pod信息2</span>
+                <span>当前副本集 {{ replicasetInfo.metadata.name }} 所管理的副本 Pods</span>
+                <el-table :data="podList" height="350px" @row-click="changePodInfo">
+                  <el-table-column label="名称" prop="metadata.name" />
+                  <el-table-column label="Phase" prop="status.phase" />
+                  <el-table-column label="Ready">
+                    <template slot-scope="scope">{{
+                      scope.row.status.conditions[1].status
+                    }}</template>
+                  </el-table-column>
+                  <el-table-column label="已创建">
+                    <template slot-scope="scope">{{
+                      scope.row.metadata.creationTimestamp | timeStringAgo
+                    }}</template>
+                  </el-table-column>
+                  <el-table-column label="nodeName" prop="spec.nodeName" />
+                  <el-table-column label="PodIP" prop="status.podIP" />
+                </el-table>
               </div>
             </el-card>
           </el-col>
+        </el-row>
+        <el-divider content-position="center">{{ podInfo.metadata.name }}</el-divider>
+
+        <el-row :gutter="12" class="el-row">
+          <el-col v-for="(initContainer,index) in podInfo.spec.initContainers" :key="index+1000" :span="8">
+            <el-card class="second-box-card">
+              <div slot="header" class="clearfix">
+                <span>{{ initContainer.name }}</span>
+
+                <el-form
+                  ref="form"
+                  :model="initContainer"
+                  label-position="left"
+                  label-width="150px"
+                >
+                  <el-form-item label="镜像">
+                    <span>{{ initContainer.image }}</span>
+                  </el-form-item>
+                  <el-form-item label="抓取策略">
+                    <span>{{ initContainer.imagePullPolicy }}</span>
+                  </el-form-item>
+                  <el-form-item label="就绪">
+                    <span>{{ podInfo.status.initContainerStatuses[index].ready }}</span>
+                  </el-form-item>
+                  <el-form-item label="重启次数">
+                    <span>{{ podInfo.status.initContainerStatuses[index].restartCount }}</span>
+                  </el-form-item>
+                  <el-form-item label="状态">
+                    <span>{{ Object.keys(podInfo.status.initContainerStatuses[index].state)[0] }}</span>
+                  </el-form-item>
+                </el-form>
+                <router-link
+                  target="_blank"
+                  :to="
+                    '/ext/kubernetes/pod/log/' +
+                      podInfo.metadata.namespace +
+                      '/' +
+                      podInfo.metadata.name +
+                      '/' +
+                      initContainer.name
+                  "
+                >
+                  <el-button
+                    v-permisaction="['pod:pod:log']"
+                    type="text"
+                    icon="el-icon-info"
+                  >查看日志</el-button>
+                </router-link>
+              </div>
+            </el-card>
+          </el-col>
+
+          <el-col v-for="(container,index) in podInfo.spec.containers" :key="index" :span="8">
+            <el-card class="second-box-card">
+              <div slot="header" class="clearfix">
+                <span>{{ container.name }}</span>
+
+                <el-form
+                  ref="form"
+                  :model="container"
+                  label-position="left"
+                  label-width="150px"
+                >
+                  <el-form-item label="镜像">
+                    <span>{{ container.image }}</span>
+                  </el-form-item>
+                  <el-form-item label="抓取策略">
+                    <span>{{ container.imagePullPolicy }}</span>
+                  </el-form-item>
+                  <el-form-item label="就绪">
+                    <span>{{ podInfo.status.containerStatuses[index].ready }}</span>
+                  </el-form-item>
+                  <el-form-item label="重启次数">
+                    <span>{{ podInfo.status.containerStatuses[index].restartCount }}</span>
+                  </el-form-item>
+                  <el-form-item label="状态">
+                    <span>{{ Object.keys(podInfo.status.containerStatuses[index].state)[0] }}</span>
+                  </el-form-item>
+                </el-form>
+                <router-link
+                  target="_blank"
+                  :to="
+                    '/ext/kubernetes/pod/log/' +
+                      podInfo.metadata.namespace +
+                      '/' +
+                      podInfo.metadata.name +
+                      '/' +
+                      container.name
+                  "
+                >
+                  <el-button
+                    v-permisaction="['pod:pod:log']"
+                    type="text"
+                    icon="el-icon-info"
+                  >查看日志</el-button>
+                </router-link>
+              </div>
+            </el-card>
+          </el-col>
+
         </el-row>
       </el-card>
     </template>
@@ -169,6 +302,8 @@
 <script>
 import { getDeployment } from '@/api/kubernetes/deployment'
 import { getService } from '@/api/kubernetes/service'
+import { listReplicaset } from '@/api/kubernetes/replicaset'
+import { listPod } from '@/api/kubernetes/pod'
 
 export default {
   name: 'DeploymentInfo',
@@ -190,18 +325,32 @@ export default {
             rollingUpdate: {}
           }
         },
-        status: {
-          replicas: 0,
-          availableReplicas: 0,
-          conditions: []
-        }
+        status: {}
       },
       serviceInfo: {
         spec: {},
         ports: [],
         clusterIP: '',
         type: ''
-      }
+      },
+      replicasetList: [],
+      replicasetInfo: {
+        metadata: {
+          name: ''
+        }
+      },
+      podList: [],
+      podInfo: {
+        metadata: {
+          name: ''
+        },
+        spec: {
+          initContainers: []
+        }
+      },
+      queryParams: {},
+      deploymentSelector: undefined,
+      rsSelector: undefined
     }
   },
   created() {
@@ -213,15 +362,60 @@ export default {
 
   methods: {
     /** 查询详细信息按钮操作 */
-    queryDeployment(namespaceName, deploymentName) {
-      getDeployment(namespaceName, deploymentName).then((response) => {
-        this.deploymentInfo = response.data
-      })
+    async queryDeployment(namespaceName, deploymentName) {
+      // 获取Deployment信息
+      await this.getDeploymentInfo(namespaceName, deploymentName)
+      // 获取Deployment的label信息
+      const matchLabels = this.deploymentInfo.spec.selector.matchLabels
+      let label = ''
+      for (const i in matchLabels) {
+        label += i + '=' + matchLabels[i] + ','
+      }
+      label = label.substr(0, label.length - 1)
+
+      // 查询 rs 信息
+      this.queryParams.labelSelector = label
+      await this.getReplicasetList(namespaceName, this.queryParams)
+      // 查询 pod 信息
+      label = ''
+      for (const i in matchLabels) {
+        label += i + '=' + matchLabels[i] + ','
+      }
+      label = label.substr(0, label.length - 1)
+      this.queryParams.labelSelector = label
+      await this.getPodList(namespaceName, this.queryParams)
     },
     queryService(namespaceName, deploymentName) {
       getService(namespaceName, deploymentName).then((response) => {
         this.serviceInfo = response.data
+      }).catch(() => {})
+    },
+    // 获取Deployment信息
+    async getDeploymentInfo(namespaceName, deploymentName) {
+      return await getDeployment(namespaceName, deploymentName).then((response) => {
+        this.deploymentInfo = response.data
       })
+    },
+    async getReplicasetList(namespaceName, labelSelector) {
+      return await listReplicaset(namespaceName, labelSelector).then((response) => {
+        this.replicasetList = response.data.items
+        this.replicasetInfo = response.data.items[0]
+      })
+    },
+    async getPodList(namespaceName, labelSelector) {
+      return await listPod(namespaceName, labelSelector).then((response) => {
+        this.podList = response.data.items
+        this.podInfo = response.data.items[0]
+      })
+    },
+    changePodInfo(row, column, event) {
+      this.podInfo = row
+    },
+    findContainerStatus(name) {
+      function findResult(data) {
+        return data.name === name
+      }
+      return this.podInfo.status.containerStatuses.find(findResult)
     }
   }
 }

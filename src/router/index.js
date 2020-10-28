@@ -71,6 +71,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/ext/kubernetes/pod/log/:namespace/:pod/:container',
+    component: () => import('@/views/kubernetes/pod/log'),
+    hidden: true
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
