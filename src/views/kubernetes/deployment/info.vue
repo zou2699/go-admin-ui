@@ -81,30 +81,29 @@
                 <el-form-item label="类型">
                   <span>{{ deploymentInfo.spec.strategy.type }}</span>
                 </el-form-item>
-                <el-form-item label="滚动更新">
-                  <div>
-                    <el-form
-                      ref="form"
-                      :model="deploymentInfo.spec.strategy.rollingUpdate"
-                      label-position="left"
-                      label-width="150px"
-                    >
-                      <el-form-item label="最大超出副本数">
-                        <span>{{
-                          deploymentInfo.spec.strategy.rollingUpdate
-                            .maxUnavailable
-                        }}</span>
-                      </el-form-item>
-                      <el-form-item label="最大不可用副本数">
-                        <span>{{
-                          deploymentInfo.spec.strategy.rollingUpdate.maxSurge
-                        }}</span>
-                      </el-form-item>
-                    </el-form>
-                  </div>
-                </el-form-item>
-              </el-form>
-            </el-card>
+                <span v-if="deploymentInfo.spec.strategy.type === 'Recreate'">使用重新创建的部署策略时，先删除旧副本集中的所有 Pod，且删除成功后，再创建新副本集中的 Pod。将有一段时间应用程序不可用。</span>
+                <template v-if="deploymentInfo.spec.strategy.type === 'RollingUpdate'">
+                  <el-form-item label="滚动更新">
+                    <div>
+                      <el-form
+                        ref="form"
+                        :model="deploymentInfo.spec.strategy.rollingUpdate"
+                        label-position="left"
+                        label-width="150px"
+                      >
+                        <el-form-item label="最大超出副本数">
+                          <span>{{
+                            deploymentInfo.spec.strategy.rollingUpdate
+                              .maxUnavailable
+                          }}</span>
+                        </el-form-item>
+                        <el-form-item label="最大不可用副本数">
+                          <span>{{
+                            deploymentInfo.spec.strategy.rollingUpdate.maxSurge
+                          }}</span>
+                        </el-form-item>
+                      </el-form></div></el-form-item></template>
+              </el-form></el-card>
           </el-col>
 
           <el-col :span="12">
