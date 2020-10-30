@@ -1,9 +1,13 @@
+import storage from '@/utils/storage'
+
 const state = {
-  namespace: 'default' }
+  namespace: storage.get('K8s_namespace') || 'default'
+}
 
 const mutations = {
   CHANGE_NAMESPACE: (state, data) => {
     state.namespace = data
+    storage.set('K8s_namespace', data)
   }
 }
 

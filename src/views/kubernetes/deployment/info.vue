@@ -80,8 +80,9 @@
               >
                 <el-form-item label="类型">
                   <span>{{ deploymentInfo.spec.strategy.type }}</span>
+                  <br>
+                  <span v-if="deploymentInfo.spec.strategy.type === 'Recreate'" style="font-size:12px">使用重新创建的部署策略时，先删除旧副本集中的所有 Pod，且删除成功后，再创建新副本集中的 Pod。将有一段时间应用程序不可用。</span>
                 </el-form-item>
-                <span v-if="deploymentInfo.spec.strategy.type === 'Recreate'">使用重新创建的部署策略时，先删除旧副本集中的所有 Pod，且删除成功后，再创建新副本集中的 Pod。将有一段时间应用程序不可用。</span>
                 <template v-if="deploymentInfo.spec.strategy.type === 'RollingUpdate'">
                   <el-form-item label="滚动更新">
                     <div>
@@ -173,7 +174,13 @@
             <el-card class="second-box-card">
               <div slot="header" class="clearfix">
                 <span>当前副本集 {{ replicasetInfo.metadata.name }} 所管理的副本 Pods</span>
-                <el-table :data="podList" height="350px" @row-click="changePodInfo">
+                <el-table
+                  ref="podListTable"
+                  highlight-current-row
+                  :data="podList"
+                  height="350px"
+                  @row-click="changePodInfo"
+                >
                   <el-table-column label="名称" prop="metadata.name" />
                   <el-table-column label="Phase" prop="status.phase" />
                   <el-table-column label="Ready">
@@ -223,7 +230,7 @@
                     <span>{{ Object.keys(podInfo.status.initContainerStatuses[index].state)[0] }}</span>
                   </el-form-item>
                 </el-form>
-                <router-link
+                <!-- <router-link
                   target="_blank"
                   :to="
                     '/ext/kubernetes/pod/log/' +
@@ -236,10 +243,14 @@
                 >
                   <el-button
                     v-permisaction="['pod:pod:log']"
-                    type="text"
-                    icon="el-icon-info"
+                    type="primary"
                   >查看日志</el-button>
-                </router-link>
+                </router-link> -->
+                <el-button
+                  v-permisaction="['pod:pod:log']"
+                  type="primary"
+                  @click="goToPodLog(podInfo.metadata.namespace,podInfo.metadata.name,initContainer.name,500)"
+                >追踪日志</el-button>
               </div>
             </el-card>
           </el-col>
@@ -271,7 +282,7 @@
                     <span>{{ Object.keys(podInfo.status.containerStatuses[index].state)[0] }}</span>
                   </el-form-item>
                 </el-form>
-                <router-link
+                <!-- <router-link
                   target="_blank"
                   :to="
                     '/ext/kubernetes/pod/log/' +
@@ -284,14 +295,46 @@
                 >
                   <el-button
                     v-permisaction="['pod:pod:log']"
-                    type="text"
-                    icon="el-icon-info"
+                    type="primary"
                   >查看日志</el-button>
-                </router-link>
+                </router-link> -->
+                <!-- <router-link
+                  v-if="Object.keys(podInfo.status.containerStatuses[index].state)[0]==='running'"
+                  target="_blank"
+                  :to="
+                    '/ext/kubernetes/pod/exec/' +
+                      podInfo.metadata.namespace +
+                      '/' +
+                      podInfo.metadata.name +
+                      '/' +
+                      container.name
+                  "
+                >
+                  <el-button
+                    v-permisaction="['pod:pod:exec']"
+                    type="success"
+                  >进入容器</el-button>
+                </router-link> -->
+                <el-button
+                  v-permisaction="['pod:pod:log']"
+                  type="primary"
+                  @click="goToPodLog(podInfo.metadata.namespace,podInfo.metadata.name,container.name,500)"
+                >追踪日志</el-button>
+                <div v-if="Object.keys(podInfo.status.containerStatuses[index].state)[0]==='running'">
+                  <el-button
+                    v-permisaction="['pod:pod:exec']"
+                    type="success"
+                    @click="goToPodExec(podInfo.metadata.namespace,podInfo.metadata.name,container.name,'bash')"
+                  >bash</el-button>
+                  <el-button
+                    v-permisaction="['pod:pod:exec']"
+                    type="success"
+                    @click="goToPodExec(podInfo.metadata.namespace,podInfo.metadata.name,container.name,'sh')"
+                  >sh</el-button>
+                </div>
               </div>
             </el-card>
           </el-col>
-
         </el-row>
       </el-card>
     </template>
@@ -358,7 +401,6 @@ export default {
     this.queryDeployment(namespace, deployment)
     this.queryService(namespace, deployment)
   },
-
   methods: {
     /** 查询详细信息按钮操作 */
     async queryDeployment(namespaceName, deploymentName) {
@@ -410,11 +452,13 @@ export default {
     changePodInfo(row, column, event) {
       this.podInfo = row
     },
-    findContainerStatus(name) {
-      function findResult(data) {
-        return data.name === name
-      }
-      return this.podInfo.status.containerStatuses.find(findResult)
+    goToPodLog(namespace, pod, container, tailLines) {
+      const routeData = this.$router.resolve({ name: 'PodLog', params: { namespace: namespace, pod: pod, container: container }, query: { tailLines: tailLines }})
+      window.open(routeData.href, '_blank')
+    },
+    goToPodExec(namespace, pod, container, shell) {
+      const routeData = this.$router.resolve({ name: 'PodExec', params: { namespace: namespace, pod: pod, container: container }, query: { shell: shell }})
+      window.open(routeData.href, '_blank')
     }
   }
 }

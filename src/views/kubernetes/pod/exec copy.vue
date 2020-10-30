@@ -1,12 +1,13 @@
 <template>
   <div>
     <div class="status-bar">  {{ namespaceName }} - {{ podName }} / {{ containerName }}
-      <span v-if="status === 'ok'" class="ws-status-ok">已连接</span>
+      <span v-if="status === 'ok'" class="ws-status-ok">{{ shell }} 已连接</span>
       <span v-else class="ws-status-err"> 已断开</span>
     </div>
     <div ref="terminal" class="console" />
 
   </div>
+
 </template>
 
 <script>
@@ -17,7 +18,7 @@ import { FitAddon } from 'xterm-addon-fit'
 import { AttachAddon } from 'xterm-addon-attach'
 
 export default {
-  name: 'PodLog',
+  name: 'PodExec',
   // props: {
   //   socketURI: {
   //     type: String,
@@ -29,9 +30,9 @@ export default {
       namespaceName: '',
       podName: '',
       containerName: '',
-      tailLines: 500,
-      socketURI: '',
-      status: ''
+      shell: 'sh',
+      status: '',
+      socketURI: ''
     }
   },
   created() {
@@ -39,13 +40,14 @@ export default {
     this.namespaceName = this.$route.params.namespace
     this.podName = this.$route.params.pod
     this.containerName = this.$route.params.container
-    this.tailLines = this.$route.query.tailLines
-    if ((this.tailLines < 10) || !this.tailLines) {
-      this.tailLines = 10
+    this.shell = this.$route.query.shell
+    if (!this.shell) {
+      this.shell = 'sh'
     }
     // 构造socketURI
-    this.socketURI = WsHost + '/k8s-api/api/v1/namespaces/' + this.namespaceName + '/pods/' + this.podName + '/log?' +
-    'tailLines=' + this.tailLines + '&container=' + this.containerName
+    this.socketURI = WsHost + '/k8s-api/api/v1/namespaces/' +
+                     this.namespaceName + '/pods/' + this.podName + '/exec?' +
+                     'shell=' + this.shell + '&container=' + this.containerName
   },
   mounted() {
     this.initSocket()
@@ -62,7 +64,11 @@ export default {
         cols: 90,
         rows: 60,
         cursorBlink: true // 光标闪烁
-
+        // theme: {
+        //   foreground: 'yellow', // 字体
+        //   background: '#060101', // 背景色
+        //   cursor: 'help' // 设置光标
+        // }
       })
       // xterm的socket组件与websocket实例结合
       const attachAddon = new AttachAddon(this.socket)
@@ -71,8 +77,9 @@ export default {
       const fitAddon = new FitAddon()
       term.loadAddon(fitAddon)
       // 在绑定的组件上初始化窗口
-      // term.open(document.getElementById('terminal'))
+      //   term.open(document.getElementById('terminal'))
       term.open(this.$refs.terminal)
+
       // 窗口初始化后,按照浏览器窗口自适应大小
       fitAddon.fit()
       // 聚焦
@@ -133,3 +140,4 @@ export default {
 }
 
 </style>
+

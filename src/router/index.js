@@ -71,8 +71,15 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    name: 'PodLog',
     path: '/ext/kubernetes/pod/log/:namespace/:pod/:container',
     component: () => import('@/views/kubernetes/pod/log'),
+    hidden: true
+  },
+  {
+    name: 'PodExec',
+    path: '/ext/kubernetes/pod/exec/:namespace/:pod/:container',
+    component: () => import('@/views/kubernetes/pod/exec'),
     hidden: true
   },
   {
